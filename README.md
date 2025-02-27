@@ -2,19 +2,19 @@
 
 
 ### Briefly summarize the requirements and goals of the app you developed. What user needs was this app designed to address?
-e
+The app I developed was a Weight Tracker App, which needed to have a login screen & functionality, SQL database to add and remove entries, SMS notifications that can be toggled on / off, and a UI system with navigation features. This app was designed to address the user's need of wanting to keep track of their own weight, and wanting a simple way to view their history without needing to write it down on a piece of paper. This app would help users set a 'goal weight', and could view their weight history and see their progress towards achieving their goal.
 
 ### What screens and features were necessary to support user needs and produce a user-centered UI for the app? How did your UI designs keep users in mind? Why were your designs successful?
-e
+To support the user needs, the app needed a login screen, home screen, database table screen, database create entry screen, settings, and an account screen. I tried to keep my UI design useful to the user, by having all of the navigation buttons on the bottom of the screen, and never moving them even when switching pages. I kept the amount of buttons odd, so that one button would fit in the center of the bottom bar. This button was the most common button to press on the app, which was the 'Add New Weight' button. I believe this was successful since it made it easier for users to quickly remember where to look when opening the app.
 
 ### How did you approach the process of coding your app? What techniques or strategies did you use? How could those techniques or strategies be applied in the future?
-e
+When coding the app, I started off by working on some of the smaller features first, which would build up my confidence to work on some of the larger features like the database or login screen. I would slowly develop and test my code with an iterative process, until I was happy with the results, and moved on to another section of code. One important strategy I learned while working on the app was learning to move on to a different part of the project when things got too complicated. It can be easy to get overwhelmed by the complicated logic of authenticating a user, or managing the connections between the user tables, and switching to something easier for a moment can help build your confidence back up, and may give you some new insights. It's basically knowing when to quit, or strategically giving up, which helps you stay productive, and come back to the code when you are feeling more confident or inspired. 
 
 ### How did you test to ensure your code was functional? Why is this process important, and what did it reveal?
-e
+Every time I finished a substantial portion of code, such as finishing the implementation of the notification alert, or adding the authentication check for the 'register' button, or adding functionality to remove database entries, I would test my code to make sure everything worked as expected. It is important to strike a balance between testing your code, and writing it. Too much coding without testing, and you might not realize a critical flaw in your code for hours. Too much testing, and you could very well be wasting your time that could be spent making the app more functional. I found a balance that worked for me, and I would mainly test my code when I felt uncertain of if something would work, or when I completed a large enough feature. Most of the time, my testing was able to cause crashes due to NullReferenceException, which was usually caused by forgetting to instantiate an object, or using it before I instantiated it. 
 
 ### Consider the full app design and development process from initial planning to finalization. Where did you have to innovate to overcome a challenge?
-e
+A big challenge for me was getting the database entries to appear on a page. I tried everything from a data table, to dynamically spawning objects on runtime, but it got really messy and harde to manage. I figured that I might as well make a standalone 
 
 ### In what specific component of your mobile app were you particularly successful in demonstrating your knowledge, skills, and experience?
 e
