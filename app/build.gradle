@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.zybooks.turco_michael_weight_tracking'
+    namespace 'com.turco_michael_weight_tracking'
     compileSdk 35
 
     defaultConfig {
-        applicationId "com.zybooks.turco_michael_weight_tracking"
+        applicationId "com.turco_michael_weight_tracking"
         minSdk 34
         //noinspection EditedTargetSdkVersion
         targetSdk 35
