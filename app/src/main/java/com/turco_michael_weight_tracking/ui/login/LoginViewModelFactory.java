@@ -1,8 +1,8 @@
 package com.turco_michael_weight_tracking.ui.login;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.annotation.NonNull;
 
 import com.turco_michael_weight_tracking.data.LoginDataSource;
 import com.turco_michael_weight_tracking.data.LoginRepository;

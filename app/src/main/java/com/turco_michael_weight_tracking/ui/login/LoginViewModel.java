@@ -1,16 +1,16 @@
 package com.turco_michael_weight_tracking.ui.login;
 
+import android.content.Context;
+import android.util.Patterns;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import android.content.Context;
-import android.util.Patterns;
-
+import com.turco_michael_weight_tracking.R;
 import com.turco_michael_weight_tracking.data.LoginRepository;
 import com.turco_michael_weight_tracking.data.Result;
 import com.turco_michael_weight_tracking.data.model.LoggedInUser;
-import com.turco_michael_weight_tracking.R;
 
 public class LoginViewModel extends ViewModel {
 

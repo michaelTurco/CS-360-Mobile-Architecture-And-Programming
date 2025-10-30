@@ -18,10 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.turco_michael_weight_tracking.LocalStorage;
 import com.turco_michael_weight_tracking.R;
-import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.databinding.FragmentSettingsBinding;
-
-import java.util.Date;
 
 public class SettingsFragment extends Fragment {
 

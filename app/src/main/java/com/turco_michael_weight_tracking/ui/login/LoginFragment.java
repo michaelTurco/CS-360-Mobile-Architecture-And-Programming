@@ -1,12 +1,5 @@
 package com.turco_michael_weight_tracking.ui.login;
 
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.fragment.app.Fragment;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -22,11 +15,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.turco_michael_weight_tracking.MainActivity;
 import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.databinding.FragmentLoginBinding;
-
-import com.turco_michael_weight_tracking.R;
 
 public class LoginFragment extends Fragment {
 
