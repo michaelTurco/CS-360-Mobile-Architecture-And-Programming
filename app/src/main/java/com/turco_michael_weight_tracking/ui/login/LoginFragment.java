@@ -9,9 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.turco_michael_weight_tracking.MainActivity;
@@ -30,7 +26,7 @@ public class LoginFragment extends Fragment {
 
     private LoginViewModel loginViewModel;
     private FragmentLoginBinding binding;
-    final UserDatabase db = new UserDatabase(getContext());
+    private UserDatabase db;
 
 
     @Nullable
@@ -47,104 +43,113 @@ public class LoginFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
-                .get(LoginViewModel.class);
 
-        final EditText usernameEditText = binding.username;
-        final EditText passwordEditText = binding.password;
-        final Button signInButton = binding.loginSignIn;
-        final Button registerButton = binding.loginRegister;
-        final ProgressBar loadingProgressBar = binding.loading;
+        db = new UserDatabase(requireContext());
+        loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory()).get(LoginViewModel.class);
 
+        setupObservers();
+        setupTextWatcher();
+        setupLoginListeners();
+    }
 
-        loginViewModel.getLoginFormState().observe(getViewLifecycleOwner(), new Observer<LoginFormState>() {
-            @Override
-            public void onChanged(@Nullable LoginFormState loginFormState) {
-                if (loginFormState == null) {
-                    return;
-                }
-                signInButton.setEnabled(loginFormState.isDataValid());
-                registerButton.setEnabled(loginFormState.isDataValid());
-                if (loginFormState.getUsernameError() != null) {
-                    usernameEditText.setError(getString(loginFormState.getUsernameError()));
-                }
-                if (loginFormState.getPasswordError() != null) {
-                    passwordEditText.setError(getString(loginFormState.getPasswordError()));
-                }
-            }
+    private void setupObservers() {
+        // handle when a change is made to the login form state
+        loginViewModel.getLoginFormState().observe(getViewLifecycleOwner(), formState -> {
+            if (formState == null) return;
+
+            binding.loginSignIn.setEnabled(formState.isDataValid());
+            binding.loginRegister.setEnabled(formState.isDataValid());
+
+            if (formState.getUsernameError() != null)
+                binding.username.setError(getString(formState.getUsernameError()));
+
+            if (formState.getPasswordError() != null)
+                binding.password.setError(getString(formState.getPasswordError()));
         });
 
+        // handle when a login result is made
+        loginViewModel.getLoginResult().observe(getViewLifecycleOwner(), loginResult -> {
+            if (loginResult == null) return;
 
-        loginViewModel.getLoginResult().observe(getViewLifecycleOwner(), new Observer<LoginResult>() {
-            @Override
-            public void onChanged(@Nullable LoginResult loginResult) {
-                if (loginResult == null) {
-                    return;
-                }
-                loadingProgressBar.setVisibility(View.GONE);
-                if (loginResult.getError() != null) {
-                    showLoginFailed(loginResult.getError());
-                }
-                if (loginResult.getSuccess() != null) {
-                    updateUiWithUser(loginResult.getSuccess());
-                }
-            }
+            binding.loading.setVisibility(View.GONE);
+
+            if (loginResult.getError() != null)
+                showLoginFailed(loginResult.getError());
+            else if (loginResult.getSuccess() != null)
+                updateUiWithUser(loginResult.getSuccess());
         });
+    }
 
-
+    private void setupTextWatcher() {
+        // check when either of the text boxes have been edited
         TextWatcher afterTextChangedListener = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // ignore
+                // unused
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // ignore
+                // unused
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
+                // send textbox contents to login view model
+                loginViewModel.loginDataChanged(
+                        binding.username.getText().toString(),
+                        binding.password.getText().toString()
+                );
             }
         };
-        usernameEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
+        // add the listeners to the 2 text boxes
+        binding.username.addTextChangedListener(afterTextChangedListener);
+        binding.password.addTextChangedListener(afterTextChangedListener);
+    }
 
+    private void setupLoginListeners() {
+        // handle when 'enter' is pressed while inside the password text box
+        binding.password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    loginViewModel.login(getContext(), usernameEditText.getText().toString(),
-                            passwordEditText.getText().toString());
+                    handleLogin();
                 }
                 return false;
             }
         });
 
-
-        signInButton.setOnClickListener(new View.OnClickListener() {
+        // handle clicking on the 'sign in' button
+        binding.loginSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
-                loginViewModel.login(getContext(), usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
+                handleLogin();
             }
         });
 
-
-        registerButton.setOnClickListener(new View.OnClickListener() {
+        // handle clicking on the 'register' button
+        binding.loginRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
-                loginViewModel.register(getContext(), usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
+                handleRegister();
             }
         });
     }
 
+    private void handleLogin() {
+        binding.loading.setVisibility(View.VISIBLE);
+        loginViewModel.login(requireContext(),
+                binding.username.getText().toString(),
+                binding.password.getText().toString());
+    }
+
+    private void handleRegister() {
+        binding.loading.setVisibility(View.VISIBLE);
+        loginViewModel.register(requireContext(),
+                binding.username.getText().toString(),
+                binding.password.getText().toString());
+    }
 
     private void updateUiWithUser(LoggedInUserView model) {
         // successful login !!

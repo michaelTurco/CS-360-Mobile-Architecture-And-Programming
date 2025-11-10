@@ -52,9 +52,8 @@ public class LocalStorage {
     }
 
 
-
     // Auto Login Information
-    public void setAutoLogin(String username, String password){
+    public void setAutoLogin(String username, String password) {
         preferences.edit().putString(KEY_AUTOLOGIN_USERNAME, username).apply();
         preferences.edit().putString(KEY_AUTOLOGIN_PASSWORD, password).apply();
     }
