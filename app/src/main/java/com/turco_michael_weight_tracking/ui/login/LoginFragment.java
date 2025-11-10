@@ -110,31 +110,18 @@ public class LoginFragment extends Fragment {
 
     private void setupLoginListeners() {
         // handle when 'enter' is pressed while inside the password text box
-        binding.password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    handleLogin();
-                }
-                return false;
+        binding.password.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                handleLogin();
             }
+            return false;
         });
 
         // handle clicking on the 'sign in' button
-        binding.loginSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleLogin();
-            }
-        });
+        binding.loginSignIn.setOnClickListener(v -> handleLogin());
 
         // handle clicking on the 'register' button
-        binding.loginRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleRegister();
-            }
-        });
+        binding.loginRegister.setOnClickListener(v -> handleRegister());
     }
 
     private void handleLogin() {
