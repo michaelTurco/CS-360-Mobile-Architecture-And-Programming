@@ -1,6 +1,6 @@
 package com.turco_michael_weight_tracking;
 
-public class CustomNotifications{
+public class CustomNotifications {
     // TODO: make class to handle sending notifications
 
     // all the work is done up to the point of sending the notification,

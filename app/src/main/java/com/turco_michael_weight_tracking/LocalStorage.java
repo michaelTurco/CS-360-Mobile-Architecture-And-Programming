@@ -13,7 +13,7 @@ public class LocalStorage {
     private static final String KEY_NOTIFICATIONS = "notifications_";
 
     // Enum to hold notification states
-    public enum NotificationStatus{
+    public enum NotificationStatus {
         Unknown,
         Accepted,
         Rejected,
@@ -21,28 +21,28 @@ public class LocalStorage {
 
     private final SharedPreferences preferences;
 
-    public LocalStorage(Context context){
+    public LocalStorage(Context context) {
         preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
 
     // Goal Weight
-    public void setGoalWeight(float weight){
+    public void setGoalWeight(float weight) {
         preferences.edit().putFloat(KEY_GOAL_WEIGHT + UserDatabase.currentUsername, weight).apply();
     }
 
-    public float getGoalWeight(){
+    public float getGoalWeight() {
         return preferences.getFloat(KEY_GOAL_WEIGHT + UserDatabase.currentUsername, -1.0f);
         // -1.0f means it is 'unset'
     }
 
 
     // Notification Status
-    public void setNotificationStatus(NotificationStatus status){
+    public void setNotificationStatus(NotificationStatus status) {
         preferences.edit().putInt(KEY_NOTIFICATIONS + UserDatabase.currentUsername, status.ordinal()).apply();
     }
 
-    public NotificationStatus getNotificationStatus(){
+    public NotificationStatus getNotificationStatus() {
         return NotificationStatus.values()[preferences.getInt(KEY_NOTIFICATIONS + UserDatabase.currentUsername, NotificationStatus.Unknown.ordinal())];
         // help on enum casting from
         // https://stackoverflow.com/questions/5878952/cast-int-to-enum-in-java

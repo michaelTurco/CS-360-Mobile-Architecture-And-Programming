@@ -1,4 +1,5 @@
 package com.turco_michael_weight_tracking;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -119,7 +120,7 @@ public class UserDatabase extends SQLiteOpenHelper {
         return userId;
     }
 
-    public void setCurrentUser(String username, long userID){
+    public void setCurrentUser(String username, long userID) {
         currentUsername = username;
         currentUserID = userID;
     }

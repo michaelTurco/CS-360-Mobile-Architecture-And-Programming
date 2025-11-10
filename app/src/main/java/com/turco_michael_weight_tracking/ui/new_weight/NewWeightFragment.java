@@ -73,7 +73,7 @@ public class NewWeightFragment extends Fragment {
                     weightText.setText("");
 
                     // send the user to the weight history
-                    if(!reachedGoal){
+                    if (!reachedGoal) {
                         NavigateToViewList();
                     }
                 }
@@ -89,23 +89,23 @@ public class NewWeightFragment extends Fragment {
         binding = null;
     }
 
-    private boolean hasValidWeightText(EditText text){
+    private boolean hasValidWeightText(EditText text) {
         return text.getText().toString().length() > 1;
     }
 
-    private float getWeightFloat(EditText text){
+    private float getWeightFloat(EditText text) {
         return Float.parseFloat(text.getText().toString());
     }
 
-    private boolean checkGoalWeight(float currentWeight){
+    private boolean checkGoalWeight(float currentWeight) {
         LocalStorage storage = new LocalStorage(getContext());
         float goalWeight = storage.getGoalWeight();
 
         // has valid entries for both
-        if(goalWeight != -1.0f && currentWeight != -1.0f){
-            if (currentWeight <= goalWeight){
+        if (goalWeight != -1.0f && currentWeight != -1.0f) {
+            if (currentWeight <= goalWeight) {
                 // has reached goal weight successfully!
-                if (hasNotificationsEnabled()){
+                if (hasNotificationsEnabled()) {
                     // send notification that goal weight is reached
                     displayGoalReachedNotification();
                 }
@@ -115,12 +115,12 @@ public class NewWeightFragment extends Fragment {
         return false;
     }
 
-    private boolean hasNotificationsEnabled(){
+    private boolean hasNotificationsEnabled() {
         LocalStorage storage = new LocalStorage(getContext());
         return storage.getNotificationStatus() == LocalStorage.NotificationStatus.Accepted;
     }
 
-    private void displayGoalReachedNotification(){
+    private void displayGoalReachedNotification() {
         new AlertDialog.Builder(getContext())
                 .setTitle("Congratulations!")
                 .setMessage("Your goal weight has been reached!")
@@ -128,12 +128,12 @@ public class NewWeightFragment extends Fragment {
                 .show();
     }
 
-    private void NavigateToHome(){
+    private void NavigateToHome() {
         BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.nav_view);
         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
     }
 
-    private void NavigateToViewList(){
+    private void NavigateToViewList() {
         BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.nav_view);
         bottomNavigationView.setSelectedItemId(R.id.navigation_view_list);
     }

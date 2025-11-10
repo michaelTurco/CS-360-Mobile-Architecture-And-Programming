@@ -39,18 +39,16 @@ public class LoginViewModel extends ViewModel {
             LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
             loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
         } else {
-            if (result instanceof Result.Error){
+            if (result instanceof Result.Error) {
                 String error = ((Result.Error) result).getError().getMessage();
 
-                if(error.equals("Username not found")){
+                if (error.equals("Username not found")) {
                     setSignInError(R.string.username_missing, null);
                     loginResult.setValue(new LoginResult(R.string.username_missing));
-                }
-                else if(error.equals("Incorrect password")){
+                } else if (error.equals("Incorrect password")) {
                     setSignInError(null, R.string.incorrect_password);
                     loginResult.setValue(new LoginResult(R.string.incorrect_password));
-                }
-                else{
+                } else {
                     loginResult.setValue(new LoginResult(R.string.sign_in_failed));
                 }
             }
@@ -66,14 +64,13 @@ public class LoginViewModel extends ViewModel {
             LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
             loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
         } else {
-            if (result instanceof Result.Error){
+            if (result instanceof Result.Error) {
                 String error = ((Result.Error) result).getError().getMessage();
 
-                if(error.equals("Username is taken")){
+                if (error.equals("Username is taken")) {
                     setSignInError(R.string.username_taken, null);
                     loginResult.setValue(new LoginResult(R.string.username_taken));
-                }
-                else{
+                } else {
                     loginResult.setValue(new LoginResult(R.string.register_failed));
                 }
             }
@@ -90,7 +87,7 @@ public class LoginViewModel extends ViewModel {
         }
     }
 
-    public void setSignInError(Integer usernameError, Integer passwordError){
+    public void setSignInError(Integer usernameError, Integer passwordError) {
         loginFormState.setValue(new LoginFormState(usernameError, passwordError));
     }
 

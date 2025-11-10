@@ -69,19 +69,17 @@ public class HomeFragment extends Fragment {
 
         UserDatabase db = new UserDatabase(getContext());
         float weight = db.getMostRecentWeight(UserDatabase.currentUserID);
-        if(weight == -1){
+        if (weight == -1) {
             mostRecentWeight.setText(R.string.no_records);
-        }
-        else{
+        } else {
             mostRecentWeight.setText(String.format(Locale.getDefault(), "%.1f lbs", weight));
         }
 
 
         float goalWeight = storage.getGoalWeight();
-        if(goalWeight == -1){
+        if (goalWeight == -1) {
             goalWeightText.setText(R.string.no_goal_weight);
-        }
-        else{
+        } else {
             goalWeightText.setText(String.format(Locale.getDefault(), "%.1f lbs", goalWeight));
         }
 
@@ -95,24 +93,24 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
-    private void attemptNotificationRequest(){
+    private void attemptNotificationRequest() {
         LocalStorage.NotificationStatus status = storage.getNotificationStatus();
 
         // only make request if user hasn't responded before
-        if(status == LocalStorage.NotificationStatus.Unknown){
+        if (status == LocalStorage.NotificationStatus.Unknown) {
             displayNotificationRequest();
         }
     }
 
-    private void NotificationsAccepted(){
+    private void NotificationsAccepted() {
         storage.setNotificationStatus(LocalStorage.NotificationStatus.Accepted);
     }
 
-    private void NotificationsRejected(){
+    private void NotificationsRejected() {
         storage.setNotificationStatus(LocalStorage.NotificationStatus.Rejected);
     }
 
-    private void displayNotificationRequest(){
+    private void displayNotificationRequest() {
         new AlertDialog.Builder(getContext())
                 .setTitle("Permission Needed")
                 .setMessage("Allow this app to send notifications?")

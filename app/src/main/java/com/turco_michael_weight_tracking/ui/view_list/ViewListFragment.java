@@ -47,7 +47,7 @@ public class ViewListFragment extends Fragment implements CustomAdapter.OnDelete
         return root;
     }
 
-    private void loadSQLEntries(){
+    private void loadSQLEntries() {
         List<WeightEntry> entries = db.getWeightEntries(UserDatabase.currentUserID);
         adapter.updateData(entries);
         adapter.notifyDataSetChanged(); // refreshes the recycler view

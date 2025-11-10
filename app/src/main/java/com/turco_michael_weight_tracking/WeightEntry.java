@@ -14,7 +14,15 @@ public class WeightEntry {
     }
 
     // Getters
-    public long getId() { return id; }
-    public Date getDate() { return date; }
-    public float getWeight() { return weight; }
+    public long getId() {
+        return id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public float getWeight() {
+        return weight;
+    }
 }

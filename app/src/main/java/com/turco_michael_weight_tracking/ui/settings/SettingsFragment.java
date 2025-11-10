@@ -100,50 +100,48 @@ public class SettingsFragment extends Fragment {
         binding = null;
     }
 
-    private boolean hasValidWeightText(EditText text){
+    private boolean hasValidWeightText(EditText text) {
         return text.getText().toString().length() > 1;
     }
 
-    private float getWeightFloat(EditText text){
+    private float getWeightFloat(EditText text) {
         return Float.parseFloat(text.getText().toString());
     }
 
-    private void updateNotificationStatusText(){
+    private void updateNotificationStatusText() {
         LocalStorage.NotificationStatus status = storage.getNotificationStatus();
-        if(status == LocalStorage.NotificationStatus.Accepted){
+        if (status == LocalStorage.NotificationStatus.Accepted) {
             notificationStatusText.setText(R.string.notifications_enabled);
             notificationsButton.setText(R.string.disable_notifications);
-        }
-        else{
+        } else {
             notificationStatusText.setText(R.string.notifications_disabled);
             notificationsButton.setText(R.string.enable_notifications);
         }
     }
 
-    private void HandleNotificationButton(){
+    private void HandleNotificationButton() {
         LocalStorage.NotificationStatus status = storage.getNotificationStatus();
-        if(status == LocalStorage.NotificationStatus.Accepted){
+        if (status == LocalStorage.NotificationStatus.Accepted) {
             // clicking should disable notifications
             storage.setNotificationStatus(LocalStorage.NotificationStatus.Rejected);
             updateNotificationStatusText();
-        }
-        else{
+        } else {
             // clicking should try to enable notifications
             displayNotificationRequest();
         }
     }
 
-    private void NotificationsAccepted(){
+    private void NotificationsAccepted() {
         storage.setNotificationStatus(LocalStorage.NotificationStatus.Accepted);
         updateNotificationStatusText();
     }
 
-    private void NotificationsRejected(){
+    private void NotificationsRejected() {
         storage.setNotificationStatus(LocalStorage.NotificationStatus.Rejected);
         updateNotificationStatusText();
     }
 
-    private void displayNotificationRequest(){
+    private void displayNotificationRequest() {
         new AlertDialog.Builder(getContext())
                 .setTitle("Permission Needed")
                 .setMessage("Allow this app to send notifications?")

@@ -11,5 +11,5 @@
         android:name="com.turco_michael_weight_tracking.ui.login.LoginFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/fragment_login"/>
+        tools:layout="@layout/fragment_login" />
 </androidx.constraintlayout.widget.ConstraintLayout>
