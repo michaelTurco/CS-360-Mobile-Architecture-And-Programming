@@ -11,6 +11,9 @@ public class LocalStorage {
     private static final String PREFS_NAME = "WeightAppPreferences";
     private static final String KEY_GOAL_WEIGHT = "goal_weight_";
     private static final String KEY_NOTIFICATIONS = "notifications_";
+    private static final String KEY_AUTOLOGIN_USERNAME = "autologin_username";
+    private static final String KEY_AUTOLOGIN_PASSWORD = "autologin_password";
+
 
     // Enum to hold notification states
     public enum NotificationStatus {
@@ -46,5 +49,21 @@ public class LocalStorage {
         return NotificationStatus.values()[preferences.getInt(KEY_NOTIFICATIONS + UserDatabase.currentUsername, NotificationStatus.Unknown.ordinal())];
         // help on enum casting from
         // https://stackoverflow.com/questions/5878952/cast-int-to-enum-in-java
+    }
+
+
+
+    // Auto Login Information
+    public void setAutoLogin(String username, String password){
+        preferences.edit().putString(KEY_AUTOLOGIN_USERNAME, username).apply();
+        preferences.edit().putString(KEY_AUTOLOGIN_PASSWORD, password).apply();
+    }
+
+    public String getAutoLoginUsername() {
+        return preferences.getString(KEY_AUTOLOGIN_USERNAME, null);
+    }
+
+    public String getAutoLoginPassword() {
+        return preferences.getString(KEY_AUTOLOGIN_PASSWORD, null);
     }
 }
