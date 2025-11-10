@@ -139,29 +139,26 @@ public class LoginFragment extends Fragment {
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
-        // successful login !!
-        if (getContext() != null && getContext().getApplicationContext() != null) {
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            startActivity(intent);
-            getActivity().finish();
-        }
+        // login was successful
+        Intent intent = new Intent(requireActivity(), MainActivity.class);
+        startActivity(intent);
+        requireActivity().finish();
     }
 
 
-    private void showLoginFailed(@StringRes Integer errorString) {
-        if (getContext() != null && getContext().getApplicationContext() != null) {
-            Toast.makeText(
-                    getContext().getApplicationContext(),
-                    errorString,
-                    Toast.LENGTH_LONG).show();
-        }
+    private void showLoginFailed(@StringRes int errorString) {
+        Toast.makeText(
+                requireContext(),
+                errorString,
+                Toast.LENGTH_LONG
+        ).show();
     }
 
 
     @Override
     public void onDestroyView() {
         db.close();
-        super.onDestroyView();
         binding = null;
+        super.onDestroyView();
     }
 }
