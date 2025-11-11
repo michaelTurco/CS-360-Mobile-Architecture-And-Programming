@@ -28,8 +28,6 @@ public class NewWeightFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        NewWeightViewModel newWeightViewModel =
-                new ViewModelProvider(this).get(NewWeightViewModel.class);
 
         binding = FragmentNewWeightBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
