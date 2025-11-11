@@ -4,12 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,6 +16,7 @@ import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.turco_michael_weight_tracking.LocalStorage;
 import com.turco_michael_weight_tracking.MainActivity;
 import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.databinding.FragmentLoginBinding;
@@ -27,6 +26,7 @@ public class LoginFragment extends Fragment {
     private LoginViewModel loginViewModel;
     private FragmentLoginBinding binding;
     private UserDatabase db;
+    private LocalStorage storage;
 
 
     @Nullable
@@ -45,11 +45,14 @@ public class LoginFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         db = new UserDatabase(requireContext());
+        storage = new LocalStorage(requireContext());
         loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory()).get(LoginViewModel.class);
 
         setupObservers();
         setupTextWatcher();
         setupLoginListeners();
+
+        loadAutoLoginInfo();
     }
 
     private void setupObservers() {
@@ -128,18 +131,45 @@ public class LoginFragment extends Fragment {
         binding.loading.setVisibility(View.VISIBLE);
         loginViewModel.login(requireContext(),
                 binding.username.getText().toString(),
-                binding.password.getText().toString());
+                binding.password.getText().toString()
+        );
     }
 
     private void handleRegister() {
         binding.loading.setVisibility(View.VISIBLE);
         loginViewModel.register(requireContext(),
                 binding.username.getText().toString(),
-                binding.password.getText().toString());
+                binding.password.getText().toString()
+        );
+    }
+
+    private void saveAutoLoginInfo() {
+        // if remember me is checked, save username and password
+        if (binding.rememberMe.isChecked()) {
+            storage.setAutoLogin(
+                    binding.username.getText().toString(),
+                    binding.password.getText().toString()
+            );
+        }
+        // not checked, so save null
+        else{
+            storage.setAutoLogin(null, null);
+        }
+    }
+
+    private void loadAutoLoginInfo(){
+        // if auto login info is stored, auto fill textboxes and checkbox, and sign in
+        if (storage.getAutoLoginUsername() != null){
+            binding.username.setText(storage.getAutoLoginUsername());
+            binding.password.setText(storage.getAutoLoginPassword());
+            binding.rememberMe.setChecked(true);
+            handleLogin();
+        }
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
-        // login was successful
+        // login / register was successful
+        saveAutoLoginInfo();
         Intent intent = new Intent(requireActivity(), MainActivity.class);
         startActivity(intent);
         requireActivity().finish();
