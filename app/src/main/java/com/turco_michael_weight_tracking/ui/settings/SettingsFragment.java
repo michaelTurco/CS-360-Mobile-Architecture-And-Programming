@@ -17,20 +17,22 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.turco_michael_weight_tracking.LocalStorage;
 import com.turco_michael_weight_tracking.LocalStorage.MeasurementUnit;
 import com.turco_michael_weight_tracking.R;
+import com.turco_michael_weight_tracking.UnitConverter;
 import com.turco_michael_weight_tracking.databinding.FragmentSettingsBinding;
 
 public class SettingsFragment extends Fragment {
 
     private FragmentSettingsBinding binding;
     private LocalStorage storage;
+    private MeasurementUnit measurementUnit;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         storage = new LocalStorage(requireContext());
+        measurementUnit = storage.getMeasurementUnit();
 
         setupTextWatcher();
         setupButtonEvents();
@@ -103,19 +105,18 @@ public class SettingsFragment extends Fragment {
 
     private void clickMeasurementButton(MeasurementUnit unit) {
         storage.setMeasurementUnit(unit);
+        measurementUnit = unit;
         updateMeasurementUnitSelected();
     }
 
     private void updateMeasurementUnitSelected() {
-        MeasurementUnit unit = storage.getMeasurementUnit();
-
         int notSelected = ContextCompat.getColor(requireContext(), R.color.gray_medium);
         int selected = ContextCompat.getColor(requireContext(), R.color.lime_medium);
 
         binding.measurementPounds.setBackgroundColor(notSelected);
         binding.measurementKilograms.setBackgroundColor(notSelected);
 
-        switch (unit) {
+        switch (measurementUnit) {
             case POUNDS:
                 binding.measurementPounds.setBackgroundColor(selected);
                 break;
@@ -124,7 +125,18 @@ public class SettingsFragment extends Fragment {
                 break;
         }
 
+        // also update any texts in the menu
+        updateMenuTexts();
+
         // got help from https://stackoverflow.com/questions/13842447/android-set-button-background-programmatically
+    }
+
+    private void updateMenuTexts() {
+        // set the texts in the menu related to the custom measurement unit
+        String LongMeasurementText = UnitConverter.getLongUnitString(requireContext(), measurementUnit);
+
+        String newWeightHint = getString(R.string.new_weight_hint, LongMeasurementText);
+        binding.editGoalWeightField.setHint(newWeightHint);
     }
 
     private boolean hasValidWeightText(EditText text) {
@@ -132,7 +144,9 @@ public class SettingsFragment extends Fragment {
     }
 
     private float getWeightFloat(EditText text) {
-        return Float.parseFloat(text.getText().toString());
+        // convert input into pounds based on what measurement unit they are currently using
+        float input = Float.parseFloat(text.getText().toString());
+        return UnitConverter.unitToPounds(input, measurementUnit);
     }
 
     private void updateNotificationStatusText() {
@@ -157,12 +171,7 @@ public class SettingsFragment extends Fragment {
     }
 
     private void displayNotificationRequest() {
-        new AlertDialog.Builder(getContext())
-                .setTitle(R.string.title_permission)
-                .setMessage(R.string.notifications_permission)
-                .setPositiveButton(R.string.permission_approve, (dialog, which) -> NotificationsAccepted())
-                .setNegativeButton(R.string.permission_deny, (dialog, which) -> NotificationsRejected())
-                .show();
+        new AlertDialog.Builder(getContext()).setTitle(R.string.title_permission).setMessage(R.string.notifications_permission).setPositiveButton(R.string.permission_approve, (dialog, which) -> NotificationsAccepted()).setNegativeButton(R.string.permission_deny, (dialog, which) -> NotificationsRejected()).show();
     }
 
     @Override
