@@ -37,6 +37,7 @@ public class SettingsFragment extends Fragment {
         setupTextWatcher();
         setupButtonEvents();
         updateNotificationStatusText();
+        updateSaveButtonEnabled();
         updateMeasurementUnitSelected();
 
         return root;
@@ -57,7 +58,7 @@ public class SettingsFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                binding.editGoalWeightApply.setEnabled(hasValidWeightText(binding.editGoalWeightField));
+                updateSaveButtonEnabled();
             }
         };
 
@@ -88,6 +89,20 @@ public class SettingsFragment extends Fragment {
             // return the user home
             BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.nav_view);
             bottomNavigationView.setSelectedItemId(R.id.navigation_home);
+        }
+    }
+
+    private void updateSaveButtonEnabled() {
+        binding.editGoalWeightApply.setEnabled(hasValidWeightText(binding.editGoalWeightField));
+
+        if (binding.editGoalWeightApply.isEnabled()) {
+            int enabledColor = ContextCompat.getColor(requireContext(), R.color.teal_medium);
+            binding.editGoalWeightApply.setBackgroundColor(enabledColor);
+            binding.editGoalWeightApply.setAlpha(1.0f);
+        } else {
+            int disabledColor = ContextCompat.getColor(requireContext(), R.color.transparent_75);
+            binding.editGoalWeightApply.setBackgroundColor(disabledColor);
+            binding.editGoalWeightApply.setAlpha(0.5f);
         }
     }
 
