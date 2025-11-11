@@ -1,20 +1,20 @@
-package com.turco_michael_weight_tracking;
+package com.turco_michael_weight_tracking.ui.view_list;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.turco_michael_weight_tracking.R;
+import com.turco_michael_weight_tracking.WeightEntry;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
+public class ViewListAdapter extends RecyclerView.Adapter<ViewListHolder> {
 
     // got help from https://developer.android.com/develop/ui/views/layout/recyclerview
     // and https://www.geeksforgeeks.org/android-recyclerview/
@@ -24,34 +24,21 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, h:mm a", Locale.getDefault());
     // date is formatted like 'Feb 21, 10:45 AM'
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView dateTextView;
-        private final TextView weightTextView;
-        private final FloatingActionButton deleteButton;
-
-        public ViewHolder(View view) {
-            super(view);
-            dateTextView = view.findViewById(R.id.entry_date);
-            weightTextView = view.findViewById(R.id.entry_weight);
-            deleteButton = view.findViewById(R.id.entry_delete);
-        }
-    }
-
-    public CustomAdapter(List<WeightEntry> dataSet, OnDeleteClickListener listener) {
+    public ViewListAdapter(List<WeightEntry> dataSet, OnDeleteClickListener listener) {
         localDataSet = dataSet;
         deleteListener = listener;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+    public ViewListHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.weight_entry, viewGroup, false);
-        return new ViewHolder(view);
+        return new ViewListHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(ViewListHolder viewHolder, int position) {
         WeightEntry entry = localDataSet.get(position);
 
         // Format date and weight

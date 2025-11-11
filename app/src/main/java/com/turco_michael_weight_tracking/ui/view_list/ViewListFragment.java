@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.turco_michael_weight_tracking.CustomAdapter;
 import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.WeightEntry;
 import com.turco_michael_weight_tracking.databinding.FragmentViewListBinding;
@@ -17,10 +16,10 @@ import com.turco_michael_weight_tracking.databinding.FragmentViewListBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewListFragment extends Fragment implements CustomAdapter.OnDeleteClickListener {
+public class ViewListFragment extends Fragment implements ViewListAdapter.OnDeleteClickListener {
 
     private FragmentViewListBinding binding;
-    private CustomAdapter adapter;
+    private ViewListAdapter adapter;
     private UserDatabase db;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -38,18 +37,22 @@ public class ViewListFragment extends Fragment implements CustomAdapter.OnDelete
     }
 
     private void setupRecyclerView() {
-        // got help from https://developer.android.com/develop/ui/views/layout/recyclerview
-        // and https://www.geeksforgeeks.org/android-recyclerview/
+        // got help from:
+        // https://developer.android.com/develop/ui/views/layout/recyclerview
+        // https://www.geeksforgeeks.org/android-recyclerview/
+
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new CustomAdapter(new ArrayList<>(), this);
+        adapter = new ViewListAdapter(new ArrayList<>(), this);
         binding.recyclerView.setAdapter(adapter);
     }
 
     private void loadSQLEntries() {
+        // got help from:
+        // https://stackoverflow.com/questions/31367599/how-to-update-recyclerview-adapter-data
+
         List<WeightEntry> entries = db.getWeightEntries(UserDatabase.currentUserID);
         adapter.updateData(entries);
         adapter.notifyDataSetChanged(); // refreshes the recycler view
-        // https://stackoverflow.com/questions/31367599/how-to-update-recyclerview-adapter-data
     }
 
     @Override
