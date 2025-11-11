@@ -39,6 +39,10 @@
     <string name="edit_goal_weight">Edit Goal Weight</string>
     <string name="apply">Save &amp; Apply</string>
 
+    <string name="title_measurement_unit">Measurement Unit</string>
+    <string name="measurement_button_pounds">Pounds (lb)</string>
+    <string name="measurement_button_kilograms">Kilograms (kg)</string>
+
     <string name="title_notifications">Notifications</string>
     <string name="enable_notifications">Enable Notifications</string>
     <string name="disable_notifications">Disable Notifications</string>

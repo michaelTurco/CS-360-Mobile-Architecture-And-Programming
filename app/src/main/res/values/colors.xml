@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#CECECE</color>
     <color name="dark_gray">#606060</color>
+    <color name="gray_medium">#A0A0A0</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="blue_200">#86BDFC</color>
     <color name="blue_500">#0077EE</color>
@@ -14,4 +15,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="teal_light">#B4E9E4</color>
     <color name="teal_medium">#3BE2D0</color>
+    <color name="lime_200">#FF04D84E</color>
+    <color name="lime_700">#FF01843A</color>
+    <color name="lime_light">#B4E8C6</color>
+    <color name="lime_medium">#3CE073</color>
 </resources>
