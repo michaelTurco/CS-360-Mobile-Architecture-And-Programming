@@ -44,8 +44,13 @@
     <string name="disable_notifications">Disable Notifications</string>
     <string name="notifications_enabled">Notifications are enabled.</string>
     <string name="notifications_disabled">Notifications are disabled.</string>
+    <string name="notifications_permission">Allow this app to send notifications?</string>
 
     <string name="title_account">Account</string>
+
+    <string name="title_permission">Permission Needed</string>
+    <string name="permission_approve">Allow</string>
+    <string name="permission_deny">Reject</string>
 
     <string name="no_records">No records</string>
     <string name="no_goal_weight">unset</string>

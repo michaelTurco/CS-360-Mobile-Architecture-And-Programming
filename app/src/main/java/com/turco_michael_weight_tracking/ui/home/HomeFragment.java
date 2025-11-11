@@ -112,10 +112,10 @@ public class HomeFragment extends Fragment {
 
     private void displayNotificationRequest() {
         new AlertDialog.Builder(getContext())
-                .setTitle("Permission Needed")
-                .setMessage("Allow this app to send notifications?")
-                .setPositiveButton("Allow", (dialog, which) -> NotificationsAccepted())
-                .setNegativeButton("Reject", (dialog, which) -> NotificationsRejected())
+                .setTitle(R.string.title_permission)
+                .setMessage(R.string.notifications_permission)
+                .setPositiveButton(R.string.permission_approve, (dialog, which) -> NotificationsAccepted())
+                .setNegativeButton(R.string.permission_deny, (dialog, which) -> NotificationsRejected())
                 .show();
     }
 }
