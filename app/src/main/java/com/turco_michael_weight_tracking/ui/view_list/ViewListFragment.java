@@ -7,9 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.turco_michael_weight_tracking.CustomAdapter;
 import com.turco_michael_weight_tracking.UserDatabase;
@@ -27,24 +25,24 @@ public class ViewListFragment extends Fragment implements CustomAdapter.OnDelete
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        ViewListViewModel viewListViewModel =
-                new ViewModelProvider(this).get(ViewListViewModel.class);
 
         binding = FragmentViewListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        RecyclerView recyclerView = binding.recyclerView;
 
         db = new UserDatabase(getContext());
 
-        // got help from https://developer.android.com/develop/ui/views/layout/recyclerview
-        // and https://www.geeksforgeeks.org/android-recyclerview/
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new CustomAdapter(new ArrayList<>(), this);
-        recyclerView.setAdapter(adapter);
-
+        setupRecyclerView();
         loadSQLEntries();
 
         return root;
+    }
+
+    private void setupRecyclerView() {
+        // got help from https://developer.android.com/develop/ui/views/layout/recyclerview
+        // and https://www.geeksforgeeks.org/android-recyclerview/
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new CustomAdapter(new ArrayList<>(), this);
+        binding.recyclerView.setAdapter(adapter);
     }
 
     private void loadSQLEntries() {
