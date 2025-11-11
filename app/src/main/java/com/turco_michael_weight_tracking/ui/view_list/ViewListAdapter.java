@@ -15,8 +15,9 @@ import java.util.Locale;
 
 public class ViewListAdapter extends RecyclerView.Adapter<ViewListHolder> {
 
-    // got help from https://developer.android.com/develop/ui/views/layout/recyclerview
-    // and https://www.geeksforgeeks.org/android-recyclerview/
+    // got help from:
+    // https://developer.android.com/develop/ui/views/layout/recyclerview
+    // https://www.geeksforgeeks.org/android-recyclerview/
 
     private List<WeightEntry> localDataSet;
     private final OnDeleteClickListener deleteListener;
@@ -63,7 +64,8 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListHolder> {
         localDataSet = newData;
     }
 
-    // got help from https://stackoverflow.com/questions/49969278/recyclerview-item-click-listener-the-right-way
+    // got help from:
+    // https://stackoverflow.com/questions/49969278/recyclerview-item-click-listener-the-right-way
     // to implement the recycler view's click listener
     public interface OnDeleteClickListener {
         void onDeleteClick(long entryId);
