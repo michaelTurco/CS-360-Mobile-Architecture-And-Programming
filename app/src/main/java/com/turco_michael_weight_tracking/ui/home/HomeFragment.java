@@ -40,7 +40,7 @@ public class HomeFragment extends Fragment {
         final TextView mostRecentWeight = binding.mostRecentWeight;
         final TextView goalWeightText = binding.goalWeight;
 
-        storage = new LocalStorage(getContext());
+        storage = new LocalStorage(requireContext());
 
         if (UserDatabase.currentUsername != null) {
             String welcomeMessage = getString(R.string.welcome_message, UserDatabase.currentUsername);

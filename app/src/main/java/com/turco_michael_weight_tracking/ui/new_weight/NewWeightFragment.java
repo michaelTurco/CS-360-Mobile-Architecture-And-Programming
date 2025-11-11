@@ -98,7 +98,7 @@ public class NewWeightFragment extends Fragment {
     }
 
     private boolean checkGoalWeight(float currentWeight) {
-        LocalStorage storage = new LocalStorage(getContext());
+        LocalStorage storage = new LocalStorage(requireContext());
         float goalWeight = storage.getGoalWeight();
 
         // has valid entries for both
@@ -116,7 +116,7 @@ public class NewWeightFragment extends Fragment {
     }
 
     private boolean hasNotificationsEnabled() {
-        LocalStorage storage = new LocalStorage(getContext());
+        LocalStorage storage = new LocalStorage(requireContext());
         return storage.getNotificationStatus() == LocalStorage.NotificationStatus.Accepted;
     }
 

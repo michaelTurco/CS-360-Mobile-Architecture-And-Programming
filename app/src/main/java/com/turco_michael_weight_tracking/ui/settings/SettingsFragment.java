@@ -43,7 +43,7 @@ public class SettingsFragment extends Fragment {
         notificationsButton = binding.toggleNotifications;
         newWeightText = binding.editGoalWeightField;
         notificationStatusText = binding.notificationsState;
-        storage = new LocalStorage(getContext());
+        storage = new LocalStorage(requireContext());
 
         updateNotificationStatusText();
 
