@@ -28,7 +28,6 @@ public class LoginFragment extends Fragment {
     private UserDatabase db;
     private LocalStorage storage;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -38,7 +37,6 @@ public class LoginFragment extends Fragment {
         binding = FragmentLoginBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -152,14 +150,14 @@ public class LoginFragment extends Fragment {
             );
         }
         // not checked, so save null
-        else{
+        else {
             storage.setAutoLogin(null, null);
         }
     }
 
-    private void loadAutoLoginInfo(){
+    private void loadAutoLoginInfo() {
         // if auto login info is stored, auto fill textboxes and checkbox, and sign in
-        if (storage.getAutoLoginUsername() != null){
+        if (storage.getAutoLoginUsername() != null) {
             binding.username.setText(storage.getAutoLoginUsername());
             binding.password.setText(storage.getAutoLoginPassword());
             binding.rememberMe.setChecked(true);
@@ -175,7 +173,6 @@ public class LoginFragment extends Fragment {
         requireActivity().finish();
     }
 
-
     private void showLoginFailed(@StringRes int errorString) {
         Toast.makeText(
                 requireContext(),
@@ -183,7 +180,6 @@ public class LoginFragment extends Fragment {
                 Toast.LENGTH_LONG
         ).show();
     }
-
 
     @Override
     public void onDestroyView() {
