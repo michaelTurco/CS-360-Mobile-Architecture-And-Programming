@@ -117,7 +117,7 @@ public class NewWeightFragment extends Fragment {
 
     private boolean hasNotificationsEnabled() {
         LocalStorage storage = new LocalStorage(requireContext());
-        return storage.getNotificationStatus() == LocalStorage.NotificationStatus.Accepted;
+        return storage.getNotificationStatus() == LocalStorage.NotificationStatus.ACCEPTED;
     }
 
     private void displayGoalReachedNotification() {

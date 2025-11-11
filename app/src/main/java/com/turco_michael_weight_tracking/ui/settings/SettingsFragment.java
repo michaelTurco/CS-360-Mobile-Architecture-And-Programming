@@ -81,9 +81,9 @@ public class SettingsFragment extends Fragment {
 
     private void clickToggleNotificationsButton() {
         LocalStorage.NotificationStatus status = storage.getNotificationStatus();
-        if (status == LocalStorage.NotificationStatus.Accepted) {
+        if (status == LocalStorage.NotificationStatus.ACCEPTED) {
             // clicking should disable notifications
-            storage.setNotificationStatus(LocalStorage.NotificationStatus.Rejected);
+            storage.setNotificationStatus(LocalStorage.NotificationStatus.REJECTED);
             updateNotificationStatusText();
         } else {
             // clicking should try to enable notifications
@@ -101,7 +101,7 @@ public class SettingsFragment extends Fragment {
 
     private void updateNotificationStatusText() {
         LocalStorage.NotificationStatus status = storage.getNotificationStatus();
-        if (status == LocalStorage.NotificationStatus.Accepted) {
+        if (status == LocalStorage.NotificationStatus.ACCEPTED) {
             binding.notificationsState.setText(R.string.notifications_enabled);
             binding.toggleNotifications.setText(R.string.disable_notifications);
         } else {
@@ -111,12 +111,12 @@ public class SettingsFragment extends Fragment {
     }
 
     private void NotificationsAccepted() {
-        storage.setNotificationStatus(LocalStorage.NotificationStatus.Accepted);
+        storage.setNotificationStatus(LocalStorage.NotificationStatus.ACCEPTED);
         updateNotificationStatusText();
     }
 
     private void NotificationsRejected() {
-        storage.setNotificationStatus(LocalStorage.NotificationStatus.Rejected);
+        storage.setNotificationStatus(LocalStorage.NotificationStatus.REJECTED);
         updateNotificationStatusText();
     }
 

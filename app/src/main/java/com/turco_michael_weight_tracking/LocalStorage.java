@@ -13,13 +13,20 @@ public class LocalStorage {
     private static final String KEY_NOTIFICATIONS = "notifications_";
     private static final String KEY_AUTOLOGIN_USERNAME = "autologin_username";
     private static final String KEY_AUTOLOGIN_PASSWORD = "autologin_password";
+    private static final String KEY_MEASUREMENT_UNIT = "measurement_unit_";
 
 
     // Enum to hold notification states
     public enum NotificationStatus {
-        Unknown,
-        Accepted,
-        Rejected,
+        UNKNOWN,
+        ACCEPTED,
+        REJECTED,
+    }
+
+    // Enum to hold measurement units
+    public enum MeasurementUnit {
+        POUNDS,
+        KILOGRAMS,
     }
 
     private final SharedPreferences preferences;
@@ -46,9 +53,8 @@ public class LocalStorage {
     }
 
     public NotificationStatus getNotificationStatus() {
-        return NotificationStatus.values()[preferences.getInt(KEY_NOTIFICATIONS + UserDatabase.currentUsername, NotificationStatus.Unknown.ordinal())];
-        // help on enum casting from
-        // https://stackoverflow.com/questions/5878952/cast-int-to-enum-in-java
+        return NotificationStatus.values()[preferences.getInt(KEY_NOTIFICATIONS + UserDatabase.currentUsername, NotificationStatus.UNKNOWN.ordinal())];
+        // help on enum casting from https://stackoverflow.com/questions/5878952/cast-int-to-enum-in-java
     }
 
 
@@ -64,5 +70,15 @@ public class LocalStorage {
 
     public String getAutoLoginPassword() {
         return preferences.getString(KEY_AUTOLOGIN_PASSWORD, null);
+    }
+
+
+    // Measurement Unit
+    public void setMeasurementUnit(MeasurementUnit unit) {
+        preferences.edit().putInt(KEY_MEASUREMENT_UNIT + UserDatabase.currentUsername, unit.ordinal()).apply();
+    }
+
+    public MeasurementUnit getMeasurementUnit() {
+        return MeasurementUnit.values()[preferences.getInt(KEY_MEASUREMENT_UNIT + UserDatabase.currentUsername, MeasurementUnit.POUNDS.ordinal())];
     }
 }

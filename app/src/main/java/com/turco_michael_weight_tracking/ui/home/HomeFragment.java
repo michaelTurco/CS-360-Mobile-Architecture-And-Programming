@@ -97,17 +97,17 @@ public class HomeFragment extends Fragment {
         LocalStorage.NotificationStatus status = storage.getNotificationStatus();
 
         // only make request if user hasn't responded before
-        if (status == LocalStorage.NotificationStatus.Unknown) {
+        if (status == LocalStorage.NotificationStatus.UNKNOWN) {
             displayNotificationRequest();
         }
     }
 
     private void NotificationsAccepted() {
-        storage.setNotificationStatus(LocalStorage.NotificationStatus.Accepted);
+        storage.setNotificationStatus(LocalStorage.NotificationStatus.ACCEPTED);
     }
 
     private void NotificationsRejected() {
-        storage.setNotificationStatus(LocalStorage.NotificationStatus.Rejected);
+        storage.setNotificationStatus(LocalStorage.NotificationStatus.REJECTED);
     }
 
     private void displayNotificationRequest() {
