@@ -69,7 +69,7 @@ public class HomeFragment extends Fragment {
 
         UserDatabase db = new UserDatabase(getContext());
         float weight = db.getMostRecentWeight(UserDatabase.currentUserID);
-        if (weight == -1) {
+        if (weight == LocalStorage.UNKNOWN) {
             mostRecentWeight.setText(R.string.no_records);
         } else {
             mostRecentWeight.setText(String.format(Locale.getDefault(), "%.1f lbs", weight));
@@ -77,7 +77,7 @@ public class HomeFragment extends Fragment {
 
 
         float goalWeight = storage.getGoalWeight();
-        if (goalWeight == -1) {
+        if (goalWeight == LocalStorage.UNKNOWN) {
             goalWeightText.setText(R.string.no_goal_weight);
         } else {
             goalWeightText.setText(String.format(Locale.getDefault(), "%.1f lbs", goalWeight));

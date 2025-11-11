@@ -24,7 +24,7 @@ public class UnitConverter {
             case KILOGRAMS:
                 return value * 2.2046226218488f;
             default:
-                return -1;
+                return LocalStorage.UNKNOWN;
         }
     }
 
@@ -35,7 +35,7 @@ public class UnitConverter {
             case KILOGRAMS:
                 return value;
             default:
-                return -1;
+                return LocalStorage.UNKNOWN;
         }
     }
 
@@ -48,7 +48,7 @@ public class UnitConverter {
             case KILOGRAMS:
                 return unitToKilograms(value, unit);
             default:
-                return -1;
+                return LocalStorage.UNKNOWN;
         }
     }
 

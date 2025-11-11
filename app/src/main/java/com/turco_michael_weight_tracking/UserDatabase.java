@@ -176,7 +176,7 @@ public class UserDatabase extends SQLiteOpenHelper {
 
     public float getMostRecentWeight(long userId) {
         SQLiteDatabase db = getReadableDatabase();
-        float returnWeight = -1f; // error value
+        float returnWeight = LocalStorage.UNKNOWN;
 
         // only select first sql result
         // https://stackoverflow.com/questions/5547440/is-there-a-way-to-fetch-the-first-entry-of-a-table-in-database-using-sql-query

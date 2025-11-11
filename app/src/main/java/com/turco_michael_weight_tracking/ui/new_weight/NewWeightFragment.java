@@ -102,7 +102,7 @@ public class NewWeightFragment extends Fragment {
         float goalWeight = storage.getGoalWeight();
 
         // has valid entries for both
-        if (goalWeight != -1.0f && currentWeight != -1.0f) {
+        if (goalWeight != LocalStorage.UNKNOWN && currentWeight != LocalStorage.UNKNOWN) {
             if (currentWeight <= goalWeight) {
                 // has reached goal weight successfully!
                 if (hasNotificationsEnabled()) {

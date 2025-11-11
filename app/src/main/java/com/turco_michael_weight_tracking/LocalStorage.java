@@ -15,6 +15,8 @@ public class LocalStorage {
     private static final String KEY_AUTOLOGIN_PASSWORD = "autologin_password";
     private static final String KEY_MEASUREMENT_UNIT = "measurement_unit_";
 
+    // Constant for unknown values
+    public static final int UNKNOWN = -1;
 
     // Enum to hold notification states
     public enum NotificationStatus {
@@ -42,8 +44,7 @@ public class LocalStorage {
     }
 
     public float getGoalWeight() {
-        return preferences.getFloat(KEY_GOAL_WEIGHT + UserDatabase.currentUsername, -1.0f);
-        // -1.0f means it is 'unset'
+        return preferences.getFloat(KEY_GOAL_WEIGHT + UserDatabase.currentUsername, UNKNOWN);
     }
 
 
