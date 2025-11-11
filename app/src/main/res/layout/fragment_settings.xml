@@ -199,7 +199,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
                     android:backgroundTint="@color/lime_medium"
-                    android:text="@string/measurement_button_pounds"
+                    android:text="@string/measurement_pounds"
                     android:textColor="@android:color/black" />
 
                 <Button
@@ -210,7 +210,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     android:backgroundTint="@color/gray_medium"
-                    android:text="@string/measurement_button_kilograms"
+                    android:text="@string/measurement_kilograms"
                     android:textColor="@android:color/black" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

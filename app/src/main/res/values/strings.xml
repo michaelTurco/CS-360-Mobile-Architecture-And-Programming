@@ -31,17 +31,19 @@
 
     <string name="title_new_weight">New Weight</string>
     <string name="enter_new_weight">Enter a New Weight</string>
-    <string name="new_weight_description">Enter your weight in pounds (lbs)</string>
+    <string name="new_weight_description">Enter your weight in %s</string>
     <string name="new_weight_submit">Submit</string>
-    <string name="new_weight_hint">new weight in lbs</string>
+    <string name="new_weight_hint">new weight in %s</string>
 
     <string name="title_settings">Settings</string>
     <string name="edit_goal_weight">Edit Goal Weight</string>
     <string name="apply">Save &amp; Apply</string>
 
     <string name="title_measurement_unit">Measurement Unit</string>
-    <string name="measurement_button_pounds">Pounds (lb)</string>
-    <string name="measurement_button_kilograms">Kilograms (kg)</string>
+    <string name="measurement_pounds">pounds (lbs)</string>
+    <string name="measurement_kilograms">kilograms (kgs)</string>
+    <string name="measurement_pounds_short">lbs</string>
+    <string name="measurement_kilograms_short">kg</string>
 
     <string name="title_notifications">Notifications</string>
     <string name="enable_notifications">Enable Notifications</string>
