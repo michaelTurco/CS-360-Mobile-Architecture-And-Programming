@@ -7,12 +7,10 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.turco_michael_weight_tracking.LocalStorage;
@@ -32,11 +30,15 @@ public class NewWeightFragment extends Fragment {
         binding = FragmentNewWeightBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final Button submitButton = binding.newWeightSubmit;
-        final EditText weightText = binding.newWeightField;
+        setupTextWatcher();
+        setupButtonEvents();
+        updateSubmitButtonEnabled();
 
-        submitButton.setEnabled(hasValidWeightText(weightText));
+        return root;
+    }
 
+    private void setupTextWatcher() {
+        // check when the new weight text box has been edited
         TextWatcher afterTextChangedListener = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -50,41 +52,40 @@ public class NewWeightFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                submitButton.setEnabled(hasValidWeightText(weightText));
+                updateSubmitButtonEnabled();
             }
         };
-        weightText.addTextChangedListener(afterTextChangedListener);
 
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (hasValidWeightText(weightText)) {
-                    // add database entry
-                    UserDatabase db = new UserDatabase(getContext());
-                    db.addWeightEntry(UserDatabase.currentUserID, new Date(), getWeightFloat(weightText));
-
-
-                    // check if the new weight meets the goal weight, then send a notification (if allowed)
-                    boolean reachedGoal = checkGoalWeight(getWeightFloat(weightText));
-
-                    // clear text
-                    weightText.setText("");
-
-                    // send the user to the weight history
-                    if (!reachedGoal) {
-                        NavigateToViewList();
-                    }
-                }
-            }
-        });
-
-        return root;
+        // add the listener to the text box
+        binding.newWeightField.addTextChangedListener(afterTextChangedListener);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    private void setupButtonEvents() {
+        // click 'submit' button
+        binding.newWeightSubmit.setOnClickListener(v -> clickSubmitButton());
+    }
+
+    private void clickSubmitButton() {
+        if (hasValidWeightText(binding.newWeightField)) {
+            // add database entry
+            UserDatabase db = new UserDatabase(getContext());
+            db.addWeightEntry(UserDatabase.currentUserID, new Date(), getWeightFloat(binding.newWeightField));
+
+            // check if the new weight meets the goal weight, then send a notification (if allowed)
+            boolean reachedGoal = checkGoalWeight(getWeightFloat(binding.newWeightField));
+
+            // clear text
+            binding.newWeightField.setText("");
+
+            // send the user to the weight history
+            if (!reachedGoal) {
+                NavigateToViewList();
+            }
+        }
+    }
+
+    private void updateSubmitButtonEnabled() {
+        binding.newWeightSubmit.setEnabled(hasValidWeightText(binding.newWeightField));
     }
 
     private boolean hasValidWeightText(EditText text) {
@@ -134,5 +135,11 @@ public class NewWeightFragment extends Fragment {
     private void NavigateToViewList() {
         BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.nav_view);
         bottomNavigationView.setSelectedItemId(R.id.navigation_view_list);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }
