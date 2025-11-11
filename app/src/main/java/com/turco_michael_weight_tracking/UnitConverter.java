@@ -31,7 +31,7 @@ public class UnitConverter {
     public static float unitToKilograms(float value, MeasurementUnit unit) {
         switch (unit) {
             case POUNDS:
-                return value / 0.45359237f;
+                return value * 0.45359237f;
             case KILOGRAMS:
                 return value;
             default:
