@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.turco_michael_weight_tracking.data.LoginDataSource;
+import com.turco_michael_weight_tracking.ui.view_list.WeightEntry;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.turco_michael_weight_tracking.R;
-import com.turco_michael_weight_tracking.WeightEntry;
 
 import java.text.SimpleDateFormat;
 import java.util.List;

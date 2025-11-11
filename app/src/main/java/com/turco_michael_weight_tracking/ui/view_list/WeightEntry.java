@@ -1,4 +1,4 @@
-package com.turco_michael_weight_tracking;
+package com.turco_michael_weight_tracking.ui.view_list;
 
 import java.util.Date;
 

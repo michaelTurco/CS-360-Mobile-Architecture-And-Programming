@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.turco_michael_weight_tracking.UserDatabase;
-import com.turco_michael_weight_tracking.WeightEntry;
 import com.turco_michael_weight_tracking.databinding.FragmentViewListBinding;
 
 import java.util.ArrayList;
