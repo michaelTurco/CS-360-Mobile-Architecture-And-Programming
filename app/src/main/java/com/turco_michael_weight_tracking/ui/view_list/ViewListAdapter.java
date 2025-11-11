@@ -1,5 +1,6 @@
 package com.turco_michael_weight_tracking.ui.view_list;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,26 +8,31 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.turco_michael_weight_tracking.LocalStorage.MeasurementUnit;
 import com.turco_michael_weight_tracking.R;
+import com.turco_michael_weight_tracking.UnitConverter;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
+// got help from:
+// https://developer.android.com/develop/ui/views/layout/recyclerview
+// https://www.geeksforgeeks.org/android-recyclerview/
 public class ViewListAdapter extends RecyclerView.Adapter<ViewListHolder> {
-
-    // got help from:
-    // https://developer.android.com/develop/ui/views/layout/recyclerview
-    // https://www.geeksforgeeks.org/android-recyclerview/
-
-    private List<WeightEntry> localDataSet;
     private final OnDeleteClickListener deleteListener;
+    private final Context context;
+    private final MeasurementUnit measurementUnit;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, h:mm a", Locale.getDefault());
     // date is formatted like 'Feb 21, 10:45 AM'
 
-    public ViewListAdapter(List<WeightEntry> dataSet, OnDeleteClickListener listener) {
-        localDataSet = dataSet;
-        deleteListener = listener;
+    private List<WeightEntry> dataSet;
+
+    public ViewListAdapter(List<WeightEntry> dataSet, OnDeleteClickListener deleteListener, Context context, MeasurementUnit measurementUnit) {
+        this.dataSet = dataSet;
+        this.deleteListener = deleteListener;
+        this.context = context;
+        this.measurementUnit = measurementUnit;
     }
 
     @NonNull
@@ -39,11 +45,11 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListHolder> {
 
     @Override
     public void onBindViewHolder(ViewListHolder viewHolder, int position) {
-        WeightEntry entry = localDataSet.get(position);
+        WeightEntry entry = dataSet.get(position);
 
         // Format date and weight
         String formattedDate = dateFormat.format(entry.getDate());
-        String formattedWeight = String.format(Locale.getDefault(), "%.1f lbs", entry.getWeight());
+        String formattedWeight = UnitConverter.poundsToFormattedUnitString(context, entry.getWeight(), measurementUnit);
 
         viewHolder.dateTextView.setText(formattedDate);
         viewHolder.weightTextView.setText(formattedWeight);
@@ -57,11 +63,11 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListHolder> {
 
     @Override
     public int getItemCount() {
-        return localDataSet.size();
+        return dataSet.size();
     }
 
     public void updateData(List<WeightEntry> newData) {
-        localDataSet = newData;
+        dataSet = newData;
     }
 
     // got help from:

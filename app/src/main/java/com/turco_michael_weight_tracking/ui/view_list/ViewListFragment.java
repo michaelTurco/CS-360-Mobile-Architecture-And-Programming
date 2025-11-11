@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.turco_michael_weight_tracking.LocalStorage;
+import com.turco_michael_weight_tracking.LocalStorage.MeasurementUnit;
 import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.databinding.FragmentViewListBinding;
 
@@ -19,6 +21,7 @@ public class ViewListFragment extends Fragment implements ViewListAdapter.OnDele
 
     private FragmentViewListBinding binding;
     private ViewListAdapter adapter;
+    private LocalStorage storage;
     private UserDatabase db;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -27,6 +30,7 @@ public class ViewListFragment extends Fragment implements ViewListAdapter.OnDele
         binding = FragmentViewListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        storage = new LocalStorage(requireContext());
         db = new UserDatabase(getContext());
 
         setupRecyclerView();
@@ -40,8 +44,9 @@ public class ViewListFragment extends Fragment implements ViewListAdapter.OnDele
         // https://developer.android.com/develop/ui/views/layout/recyclerview
         // https://www.geeksforgeeks.org/android-recyclerview/
 
+        MeasurementUnit unit = storage.getMeasurementUnit();
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ViewListAdapter(new ArrayList<>(), this);
+        adapter = new ViewListAdapter(new ArrayList<>(), this, requireContext(), unit);
         binding.recyclerView.setAdapter(adapter);
     }
 
