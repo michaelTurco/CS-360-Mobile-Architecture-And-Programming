@@ -14,7 +14,9 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.turco_michael_weight_tracking.LocalStorage;
+import com.turco_michael_weight_tracking.LocalStorage.MeasurementUnit;
 import com.turco_michael_weight_tracking.R;
+import com.turco_michael_weight_tracking.UnitConverter;
 import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.databinding.FragmentNewWeightBinding;
 
@@ -23,15 +25,20 @@ import java.util.Date;
 public class NewWeightFragment extends Fragment {
 
     private FragmentNewWeightBinding binding;
+    private LocalStorage storage;
+    private MeasurementUnit measurementUnit;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentNewWeightBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        storage = new LocalStorage(requireContext());
+        measurementUnit = storage.getMeasurementUnit();
+
         setupTextWatcher();
         setupButtonEvents();
+        setupMenuTexts();
         updateSubmitButtonEnabled();
 
         return root;
@@ -65,6 +72,17 @@ public class NewWeightFragment extends Fragment {
         binding.newWeightSubmit.setOnClickListener(v -> clickSubmitButton());
     }
 
+    private void setupMenuTexts() {
+        // set the texts in the menu related to the custom measurement unit
+        String LongMeasurementText = UnitConverter.getLongUnitString(requireContext(), measurementUnit);
+
+        String descriptionMessage = getString(R.string.new_weight_description, LongMeasurementText);
+        binding.descriptionNewWeight.setText(descriptionMessage);
+
+        String newWeightHint = getString(R.string.new_weight_hint, LongMeasurementText);
+        binding.newWeightField.setHint(newWeightHint);
+    }
+
     private void clickSubmitButton() {
         if (hasValidWeightText(binding.newWeightField)) {
             // add database entry
@@ -93,11 +111,12 @@ public class NewWeightFragment extends Fragment {
     }
 
     private float getWeightFloat(EditText text) {
-        return Float.parseFloat(text.getText().toString());
+        // convert input into pounds based on what measurement unit they are currently using
+        float input = Float.parseFloat(text.getText().toString());
+        return UnitConverter.unitToPounds(input, measurementUnit);
     }
 
     private boolean checkGoalWeight(float currentWeight) {
-        LocalStorage storage = new LocalStorage(requireContext());
         float goalWeight = storage.getGoalWeight();
 
         // has valid entries for both
@@ -115,25 +134,20 @@ public class NewWeightFragment extends Fragment {
     }
 
     private boolean hasNotificationsEnabled() {
-        LocalStorage storage = new LocalStorage(requireContext());
         return storage.getNotificationStatus() == LocalStorage.NotificationStatus.ACCEPTED;
     }
 
     private void displayGoalReachedNotification() {
-        new AlertDialog.Builder(getContext())
-                .setTitle("Congratulations!")
-                .setMessage("Your goal weight has been reached!")
-                .setPositiveButton("OK", (dialog, which) -> NavigateToHome())
-                .show();
+        new AlertDialog.Builder(getContext()).setTitle("Congratulations!").setMessage("Your goal weight has been reached!").setPositiveButton("OK", (dialog, which) -> NavigateToHome()).show();
     }
 
     private void NavigateToHome() {
-        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.nav_view);
+        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.nav_view);
         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
     }
 
     private void NavigateToViewList() {
-        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.nav_view);
+        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.nav_view);
         bottomNavigationView.setSelectedItemId(R.id.navigation_view_list);
     }
 

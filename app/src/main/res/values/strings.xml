@@ -31,7 +31,7 @@
 
     <string name="title_new_weight">New Weight</string>
     <string name="enter_new_weight">Enter a New Weight</string>
-    <string name="new_weight_description">Enter your weight in %s</string>
+    <string name="new_weight_description">Enter your weight in\n%s</string>
     <string name="new_weight_submit">Submit</string>
     <string name="new_weight_hint">new weight in %s</string>
 
