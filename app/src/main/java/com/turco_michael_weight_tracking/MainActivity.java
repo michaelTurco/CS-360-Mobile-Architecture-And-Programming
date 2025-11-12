@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void navigateToMenu(@IdRes int menuId) {
-
         // setup default transition animations
         NavOptions navOptions = new NavOptions.Builder()
                 .setEnterAnim(androidx.navigation.ui.R.anim.nav_default_enter_anim)
@@ -75,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
+        // handle the back arrow button press
         return navController.navigateUp() || super.onSupportNavigateUp();
         // found some help from:
         // https://developer.android.com/guide/navigation/integrations/ui
