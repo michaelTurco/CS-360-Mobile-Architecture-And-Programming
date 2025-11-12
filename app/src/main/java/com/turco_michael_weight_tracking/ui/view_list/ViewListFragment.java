@@ -7,12 +7,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.turco_michael_weight_tracking.LocalStorage;
 import com.turco_michael_weight_tracking.LocalStorage.MeasurementUnit;
+import com.turco_michael_weight_tracking.MainActivity;
 import com.turco_michael_weight_tracking.R;
 import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.databinding.FragmentViewListBinding;
@@ -69,8 +68,7 @@ public class ViewListFragment extends Fragment implements ViewListAdapter.OnDele
     }
 
     private void clickGraphButton() {
-        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
-        navController.navigate(R.id.action_view_list_to_graph);
+        ((MainActivity) requireActivity()).navigateToMenu(R.id.navigation_graph);
     }
 
     @Override
