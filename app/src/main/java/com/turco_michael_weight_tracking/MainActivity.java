@@ -16,6 +16,7 @@ import com.turco_michael_weight_tracking.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,15 +25,22 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+
         setupNavigationBar();
         setupNavigationListener();
     }
 
     private void setupNavigationBar() {
         // add the 5 main buttons to the navigation bar
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_home, R.id.navigation_view_list, R.id.navigation_new_weight, R.id.navigation_settings, R.id.navigation_account).build();
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_home,
+                R.id.navigation_view_list,
+                R.id.navigation_new_weight,
+                R.id.navigation_settings,
+                R.id.navigation_account
+        ).build();
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
@@ -48,10 +56,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void navigateToMenu(@IdRes int menuId) {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
 
         // setup default transition animations
-        NavOptions navOptions = new NavOptions.Builder().setEnterAnim(androidx.navigation.ui.R.anim.nav_default_enter_anim).setExitAnim(androidx.navigation.ui.R.anim.nav_default_exit_anim).setPopEnterAnim(androidx.navigation.ui.R.anim.nav_default_pop_enter_anim).setPopExitAnim(androidx.navigation.ui.R.anim.nav_default_pop_exit_anim).build();
+        NavOptions navOptions = new NavOptions.Builder()
+                .setEnterAnim(androidx.navigation.ui.R.anim.nav_default_enter_anim)
+                .setExitAnim(androidx.navigation.ui.R.anim.nav_default_exit_anim)
+                .setPopEnterAnim(androidx.navigation.ui.R.anim.nav_default_pop_enter_anim)
+                .setPopExitAnim(androidx.navigation.ui.R.anim.nav_default_pop_exit_anim)
+                .build();
 
         navController.popBackStack(menuId, false);
 
@@ -63,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         return navController.navigateUp() || super.onSupportNavigateUp();
         // found some help from:
         // https://developer.android.com/guide/navigation/integrations/ui
