@@ -138,7 +138,11 @@ public class NewWeightFragment extends Fragment {
     }
 
     private void displayGoalReachedNotification() {
-        new AlertDialog.Builder(getContext()).setTitle("Congratulations!").setMessage("Your goal weight has been reached!").setPositiveButton("OK", (dialog, which) -> NavigateToHome()).show();
+        new AlertDialog.Builder(getContext())
+                .setTitle("Congratulations!")
+                .setMessage("Your goal weight has been reached!")
+                .setPositiveButton("OK", (dialog, which) -> NavigateToHome())
+                .show();
     }
 
     private void NavigateToHome() {
