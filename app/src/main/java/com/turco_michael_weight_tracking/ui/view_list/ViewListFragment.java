@@ -70,7 +70,7 @@ public class ViewListFragment extends Fragment implements ViewListAdapter.OnDele
 
     private void clickGraphButton() {
         NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
-        navController.navigate(R.id.navigation_graph);
+        navController.navigate(R.id.action_view_list_to_graph);
     }
 
     @Override

@@ -15,7 +15,17 @@
         android:id="@+id/navigation_view_list"
         android:name="com.turco_michael_weight_tracking.ui.view_list.ViewListFragment"
         android:label="@string/title_view_list"
-        tools:layout="@layout/fragment_view_list" />
+        tools:layout="@layout/fragment_view_list">
+
+        <action
+            android:id="@+id/action_view_list_to_graph"
+            app:destination="@id/navigation_graph"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <!-- got help from https://developer.android.com/guide/navigation/use-graph/animate-transitions -->
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_new_weight"
