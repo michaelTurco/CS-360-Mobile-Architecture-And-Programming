@@ -13,9 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.turco_michael_weight_tracking.LocalStorage;
 import com.turco_michael_weight_tracking.LocalStorage.MeasurementUnit;
+import com.turco_michael_weight_tracking.NavigationUtils;
 import com.turco_michael_weight_tracking.R;
 import com.turco_michael_weight_tracking.UnitConverter;
 import com.turco_michael_weight_tracking.databinding.FragmentSettingsBinding;
@@ -87,8 +87,7 @@ public class SettingsFragment extends Fragment {
             binding.editGoalWeightField.setText("");
 
             // return the user home
-            BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.nav_view);
-            bottomNavigationView.setSelectedItemId(R.id.navigation_home);
+            NavigationUtils.navigateTo(this, R.id.navigation_home);
         }
     }
 
@@ -143,7 +142,8 @@ public class SettingsFragment extends Fragment {
         // also update any texts in the menu
         updateMenuTexts();
 
-        // got help from https://stackoverflow.com/questions/13842447/android-set-button-background-programmatically
+        // got help from
+        // https://stackoverflow.com/questions/13842447/android-set-button-background-programmatically
     }
 
     private void updateMenuTexts() {
@@ -186,7 +186,12 @@ public class SettingsFragment extends Fragment {
     }
 
     private void displayNotificationRequest() {
-        new AlertDialog.Builder(getContext()).setTitle(R.string.title_permission).setMessage(R.string.notifications_permission).setPositiveButton(R.string.permission_approve, (dialog, which) -> NotificationsAccepted()).setNegativeButton(R.string.permission_deny, (dialog, which) -> NotificationsRejected()).show();
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.title_permission)
+                .setMessage(R.string.notifications_permission)
+                .setPositiveButton(R.string.permission_approve, (dialog, which) -> NotificationsAccepted())
+                .setNegativeButton(R.string.permission_deny, (dialog, which) -> NotificationsRejected())
+                .show();
     }
 
     @Override
