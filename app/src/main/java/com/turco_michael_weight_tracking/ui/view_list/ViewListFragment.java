@@ -7,10 +7,13 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.turco_michael_weight_tracking.LocalStorage;
 import com.turco_michael_weight_tracking.LocalStorage.MeasurementUnit;
+import com.turco_michael_weight_tracking.R;
 import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.databinding.FragmentViewListBinding;
 
@@ -33,10 +36,16 @@ public class ViewListFragment extends Fragment implements ViewListAdapter.OnDele
         storage = new LocalStorage(requireContext());
         db = new UserDatabase(getContext());
 
+        setupButtonEvents();
         setupRecyclerView();
         loadSQLEntries();
 
         return root;
+    }
+
+    private void setupButtonEvents() {
+        // clicking the graph button
+        binding.graphButton.setOnClickListener(v -> clickGraphButton());
     }
 
     private void setupRecyclerView() {
@@ -57,6 +66,11 @@ public class ViewListFragment extends Fragment implements ViewListAdapter.OnDele
         List<WeightEntry> entries = db.getWeightEntries(UserDatabase.currentUserID);
         adapter.updateData(entries);
         adapter.notifyDataSetChanged(); // refreshes the recycler view
+    }
+
+    private void clickGraphButton() {
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
+        navController.navigate(R.id.navigation_graph);
     }
 
     @Override

@@ -34,4 +34,10 @@
         android:name="com.turco_michael_weight_tracking.ui.account.AccountFragment"
         android:label="@string/title_account"
         tools:layout="@layout/fragment_account" />
+
+    <fragment
+        android:id="@+id/navigation_graph"
+        android:name="com.turco_michael_weight_tracking.ui.graph.GraphFragment"
+        android:label="@string/title_graph"
+        tools:layout="@layout/fragment_graph" />
 </navigation>
