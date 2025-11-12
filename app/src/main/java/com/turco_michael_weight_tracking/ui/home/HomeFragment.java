@@ -40,10 +40,14 @@ public class HomeFragment extends Fragment {
 
     private void setupButtonEvents() {
         // clicking the plus button 'add new weight'
-        binding.addWeight.setOnClickListener(v -> NavigationUtils.navigateTo(this, R.id.navigation_new_weight));
+        binding.addWeight.setOnClickListener(v ->
+                NavigationUtils.navigateTo(this, R.id.navigation_new_weight)
+        );
 
         // clicking the pencil button 'edit goal weight'
-        binding.editGoalWeight.setOnClickListener(v -> NavigationUtils.navigateTo(this, R.id.navigation_settings));
+        binding.editGoalWeight.setOnClickListener(v ->
+                NavigationUtils.navigateTo(this, R.id.navigation_settings)
+        );
     }
 
     private void setWelcomeText() {
