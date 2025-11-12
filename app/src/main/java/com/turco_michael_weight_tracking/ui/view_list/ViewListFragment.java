@@ -44,7 +44,7 @@ public class ViewListFragment extends Fragment implements ViewListAdapter.OnDele
 
     private void setupButtonEvents() {
         // clicking the graph button
-        binding.graphButton.setOnClickListener(v -> clickGraphButton());
+        binding.graphButton.setOnClickListener(v -> NavigationUtils.navigateTo(this, R.id.navigation_graph));
     }
 
     private void setupRecyclerView() {
@@ -65,10 +65,6 @@ public class ViewListFragment extends Fragment implements ViewListAdapter.OnDele
         List<WeightEntry> entries = db.getWeightEntries(UserDatabase.currentUserID);
         adapter.updateData(entries);
         adapter.notifyDataSetChanged(); // refreshes the recycler view
-    }
-
-    private void clickGraphButton() {
-        NavigationUtils.navigateTo(requireActivity(), R.id.navigation_graph);
     }
 
     @Override
