@@ -12,9 +12,9 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.turco_michael_weight_tracking.LocalStorage;
 import com.turco_michael_weight_tracking.LocalStorage.MeasurementUnit;
+import com.turco_michael_weight_tracking.NavigationUtils;
 import com.turco_michael_weight_tracking.R;
 import com.turco_michael_weight_tracking.UnitConverter;
 import com.turco_michael_weight_tracking.UserDatabase;
@@ -97,7 +97,7 @@ public class NewWeightFragment extends Fragment {
 
             // send the user to the weight history
             if (!reachedGoal) {
-                NavigateToViewList();
+                NavigationUtils.navigateTo(this, R.id.navigation_view_list);
             }
         }
     }
@@ -141,18 +141,8 @@ public class NewWeightFragment extends Fragment {
         new AlertDialog.Builder(getContext())
                 .setTitle("Congratulations!")
                 .setMessage("Your goal weight has been reached!")
-                .setPositiveButton("OK", (dialog, which) -> NavigateToHome())
+                .setPositiveButton("OK", (dialog, which) -> NavigationUtils.navigateTo(this, R.id.navigation_home))
                 .show();
-    }
-
-    private void NavigateToHome() {
-        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.nav_view);
-        bottomNavigationView.setSelectedItemId(R.id.navigation_home);
-    }
-
-    private void NavigateToViewList() {
-        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.nav_view);
-        bottomNavigationView.setSelectedItemId(R.id.navigation_view_list);
     }
 
     @Override
