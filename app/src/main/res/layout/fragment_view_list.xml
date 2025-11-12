@@ -12,7 +12,7 @@
         android:layout_height="45dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="52dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="80dp"
         android:gravity="center"
         android:text="@string/title_weight_history"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -57,6 +57,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/graph_button"
+        android:layout_width="62dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="-32dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="33dp"
+        android:layout_marginBottom="48dp"
+        android:clickable="true"
+        android:contentDescription="@string/title_graph"
+        android:src="@drawable/ic_chart_black_24dp"
+        app:backgroundTint="@color/gray_medium"
+        app:layout_constraintBottom_toTopOf="@+id/title_weight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/title_view_list"
+        app:layout_constraintTop_toTopOf="parent"
+        app:maxImageSize="40dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
