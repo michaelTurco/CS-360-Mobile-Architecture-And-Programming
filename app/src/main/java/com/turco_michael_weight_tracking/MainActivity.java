@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private NavController navController;
+    private BottomNavigationView navView;
+    private NavOptions navOptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +28,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        navView = findViewById(R.id.nav_view);
 
         setupNavigationBar();
+        setupDefaultTransition();
         setupNavigationListener();
     }
 
@@ -45,9 +49,17 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
 
-    private void setupNavigationListener() {
-        BottomNavigationView navView = findViewById(R.id.nav_view);
+    private void setupDefaultTransition() {
+        // setup default transition animations
+        navOptions = new NavOptions.Builder()
+                .setEnterAnim(androidx.navigation.ui.R.anim.nav_default_enter_anim)
+                .setExitAnim(androidx.navigation.ui.R.anim.nav_default_exit_anim)
+                .setPopEnterAnim(androidx.navigation.ui.R.anim.nav_default_pop_enter_anim)
+                .setPopExitAnim(androidx.navigation.ui.R.anim.nav_default_pop_exit_anim)
+                .build();
+    }
 
+    private void setupNavigationListener() {
         // handle when a navigation button is pressed
         navView.setOnItemSelectedListener(item -> {
             navigateToMenu(item.getItemId());
@@ -56,14 +68,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void navigateToMenu(@IdRes int menuId) {
-        // setup default transition animations
-        NavOptions navOptions = new NavOptions.Builder()
-                .setEnterAnim(androidx.navigation.ui.R.anim.nav_default_enter_anim)
-                .setExitAnim(androidx.navigation.ui.R.anim.nav_default_exit_anim)
-                .setPopEnterAnim(androidx.navigation.ui.R.anim.nav_default_pop_enter_anim)
-                .setPopExitAnim(androidx.navigation.ui.R.anim.nav_default_pop_exit_anim)
-                .build();
-
+        // clear any opened submenus first
         navController.popBackStack(menuId, false);
 
         // only navigate if it is a different menu
@@ -76,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         // handle the back arrow button press
         return navController.navigateUp() || super.onSupportNavigateUp();
+
         // found some help from:
         // https://developer.android.com/guide/navigation/integrations/ui
     }
