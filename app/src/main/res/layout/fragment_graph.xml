@@ -6,21 +6,29 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/graph"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/card_goal_weight"
         android:layout_width="407dp"
         android:layout_height="102dp"
         android:layout_marginStart="2dp"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="2dp"
-        android:layout_marginBottom="379dp"
         app:cardBackgroundColor="@color/teal_light"
         app:cardCornerRadius="10dp"
         app:cardElevation="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/graph">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

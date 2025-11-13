@@ -19,5 +19,9 @@
     <color name="lime_700">#FF01843A</color>
     <color name="lime_light">#B4E8C6</color>
     <color name="lime_medium">#3CE073</color>
+    <color name="graph_weight_line">#FF6B38A5</color>
+    <color name="graph_circle">#FF914FE2</color>
+    <color name="graph_circle_hole">#FFFFFFFF</color>
+    <color name="graph_goal_weight_line">#FFEA3427</color>
     <color name="transparent_75">#4B000000</color>
 </resources>
