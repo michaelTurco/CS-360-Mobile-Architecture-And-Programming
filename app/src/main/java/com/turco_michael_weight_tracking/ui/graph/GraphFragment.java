@@ -17,8 +17,10 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.turco_michael_weight_tracking.LocalStorage;
+import com.turco_michael_weight_tracking.LocalStorage.MeasurementUnit;
 import com.turco_michael_weight_tracking.NavigationUtils;
 import com.turco_michael_weight_tracking.R;
+import com.turco_michael_weight_tracking.UnitConverter;
 import com.turco_michael_weight_tracking.databinding.FragmentGraphBinding;
 
 import java.util.ArrayList;
@@ -28,26 +30,26 @@ public class GraphFragment extends Fragment {
 
     private FragmentGraphBinding binding;
     private LocalStorage storage;
+    private MeasurementUnit unit;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentGraphBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         storage = new LocalStorage(requireContext());
+        unit = storage.getMeasurementUnit();
 
         setupButtonEvents();
         setupGraph();
+        updateDisplayValues();
 
         return root;
     }
 
     private void setupButtonEvents() {
         // clicking the pencil button 'edit goal weight'
-        binding.editGoalWeight.setOnClickListener(v ->
-                NavigationUtils.navigateTo(this, R.id.navigation_settings)
-        );
+        binding.editGoalWeight.setOnClickListener(v -> NavigationUtils.navigateTo(this, R.id.navigation_settings));
     }
 
     private void setupGraph() {
@@ -103,28 +105,47 @@ public class GraphFragment extends Fragment {
         weightDataSet.setCircleHoleRadius(8f);
         weightDataSet.setDrawValues(false);
 
-        // temp entries just for testing
-        List<Entry> goalEntries = new ArrayList<>();
-        goalEntries.add(new Entry(0.9f, 170));
-        goalEntries.add(new Entry(4.1f, 170));
+        // set up the goal weight values
+        float goalWeight = storage.getGoalWeight();
+        if (goalWeight != LocalStorage.UNKNOWN) {
+            // convert to local units and add to graph
+            goalWeight = UnitConverter.unitToPounds(goalWeight, unit);
+            List<Entry> goalEntries = new ArrayList<>();
+            goalEntries.add(new Entry(0.9f, goalWeight));
+            goalEntries.add(new Entry(4.1f, goalWeight));
 
-        // set up goal weight line, dashed line that is straight
-        LineDataSet goalDataSet = new LineDataSet(goalEntries, "Goal");
-        goalDataSet.setColor(goalWeightLineColor);
-        goalDataSet.setLineWidth(4f);
-        goalDataSet.enableDashedLine(20f, 15f, 0f);
-        goalDataSet.setDrawCircles(false);
-        goalDataSet.setDrawValues(false);
+            // set up goal weight line settings, dashed line that is straight
+            LineDataSet goalDataSet = new LineDataSet(goalEntries, "Goal");
+            goalDataSet.setColor(goalWeightLineColor);
+            goalDataSet.setLineWidth(4f);
+            goalDataSet.enableDashedLine(20f, 15f, 0f);
+            goalDataSet.setDrawCircles(false);
+            goalDataSet.setDrawValues(false);
 
-        // add the data to the chart to display
-        LineData data = new LineData(weightDataSet, goalDataSet);
-        chart.setData(data);
+            // add the data and the goal line to the chart to display
+            LineData data = new LineData(weightDataSet, goalDataSet);
+            chart.setData(data);
+        } else {
+            // only add the data to the chart to display
+            LineData data = new LineData(weightDataSet);
+            chart.setData(data);
+        }
 
         // cause the graph to redraw
         chart.invalidate();
 
         // got help from:
         // https://www.geeksforgeeks.org/android/point-graph-series-in-android/
+    }
+
+    private void updateDisplayValues() {
+        // update 'goal weight'
+        float goalWeight = storage.getGoalWeight();
+        if (goalWeight == LocalStorage.UNKNOWN) {
+            binding.goalWeight.setText(R.string.no_goal_weight);
+        } else {
+            binding.goalWeight.setText(UnitConverter.poundsToFormattedUnitString(requireContext(), goalWeight, unit));
+        }
     }
 
     @Override
