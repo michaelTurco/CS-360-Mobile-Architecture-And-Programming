@@ -16,6 +16,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.turco_michael_weight_tracking.LocalStorage;
 import com.turco_michael_weight_tracking.LocalStorage.MeasurementUnit;
 import com.turco_michael_weight_tracking.NavigationUtils;
@@ -31,6 +32,7 @@ public class GraphFragment extends Fragment {
     private FragmentGraphBinding binding;
     private LocalStorage storage;
     private MeasurementUnit unit;
+    private List<ILineDataSet> graphLines;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -39,10 +41,14 @@ public class GraphFragment extends Fragment {
 
         storage = new LocalStorage(requireContext());
         unit = storage.getMeasurementUnit();
+        graphLines = new ArrayList<>();
 
         setupButtonEvents();
-        setupGraph();
         updateDisplayValues();
+        setupGraphSettings();
+        setupGraphWeightLine();
+        setupGraphGoalWeightLine();
+        renderGraph();
 
         return root;
     }
@@ -52,41 +58,55 @@ public class GraphFragment extends Fragment {
         binding.editGoalWeight.setOnClickListener(v -> NavigationUtils.navigateTo(this, R.id.navigation_settings));
     }
 
-    private void setupGraph() {
-        // set up color variables
-        int weightLineColor = ContextCompat.getColor(requireContext(), R.color.graph_weight_line);
-        int circleColor = ContextCompat.getColor(requireContext(), R.color.graph_circle);
-        int innerCircleColor = ContextCompat.getColor(requireContext(), R.color.graph_circle_hole);
-        int goalWeightLineColor = ContextCompat.getColor(requireContext(), R.color.graph_goal_weight_line);
+    private void updateDisplayValues() {
+        // update 'goal weight'
+        float goalWeight = storage.getGoalWeight();
+        if (goalWeight == LocalStorage.UNKNOWN) {
+            binding.goalWeight.setText(R.string.no_goal_weight);
+        } else {
+            binding.goalWeight.setText(UnitConverter.poundsToFormattedUnitString(requireContext(), goalWeight, unit));
+        }
+    }
 
+    private void setupGraphSettings() {
         // set up chart properties
-        LineChart chart = binding.graph;
-        chart.getDescription().setEnabled(false);
-        chart.setTouchEnabled(true);
-        chart.setPinchZoom(true);
-        chart.setScaleEnabled(true);
-        chart.getAxisRight().setEnabled(false);
+        LineChart graph = binding.graph;
+        graph.getDescription().setEnabled(false);
+        graph.setTouchEnabled(true);
+        graph.setPinchZoom(true);
+        graph.setScaleEnabled(true);
+        graph.getAxisRight().setEnabled(false);
 
         // set up X axis
-        XAxis xAxis = chart.getXAxis();
+        XAxis xAxis = graph.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(true);
         xAxis.setGridLineWidth(1f);
         xAxis.setTextSize(14f);
 
         // set up Y axis
-        YAxis yAxis = chart.getAxisLeft();
+        YAxis yAxis = graph.getAxisLeft();
         yAxis.setDrawGridLines(true);
         yAxis.setGridLineWidth(1f);
         yAxis.setTextSize(14f);
 
         // set up the keys that show up on the bottom of the graph
-        Legend legend = chart.getLegend();
+        Legend legend = graph.getLegend();
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
         legend.setXEntrySpace(15f);
         legend.setFormSize(14f);
         legend.setTextSize(14f);
         legend.setEnabled(true);
+
+        // got help from:
+        // https://www.geeksforgeeks.org/android/point-graph-series-in-android/
+    }
+
+    private void setupGraphWeightLine() {
+        // set up color variables
+        int weightLineColor = ContextCompat.getColor(requireContext(), R.color.graph_weight_line);
+        int circleColor = ContextCompat.getColor(requireContext(), R.color.graph_circle);
+        int innerCircleColor = ContextCompat.getColor(requireContext(), R.color.graph_circle_hole);
 
         // temp entries just for testing
         List<Entry> weightEntries = new ArrayList<>();
@@ -105,47 +125,45 @@ public class GraphFragment extends Fragment {
         weightDataSet.setCircleHoleRadius(8f);
         weightDataSet.setDrawValues(false);
 
-        // set up the goal weight values
-        float goalWeight = storage.getGoalWeight();
-        if (goalWeight != LocalStorage.UNKNOWN) {
-            // convert to local units and add to graph
-            goalWeight = UnitConverter.unitToPounds(goalWeight, unit);
-            List<Entry> goalEntries = new ArrayList<>();
-            goalEntries.add(new Entry(0.9f, goalWeight));
-            goalEntries.add(new Entry(4.1f, goalWeight));
-
-            // set up goal weight line settings, dashed line that is straight
-            LineDataSet goalDataSet = new LineDataSet(goalEntries, "Goal");
-            goalDataSet.setColor(goalWeightLineColor);
-            goalDataSet.setLineWidth(4f);
-            goalDataSet.enableDashedLine(20f, 15f, 0f);
-            goalDataSet.setDrawCircles(false);
-            goalDataSet.setDrawValues(false);
-
-            // add the data and the goal line to the chart to display
-            LineData data = new LineData(weightDataSet, goalDataSet);
-            chart.setData(data);
-        } else {
-            // only add the data to the chart to display
-            LineData data = new LineData(weightDataSet);
-            chart.setData(data);
-        }
-
-        // cause the graph to redraw
-        chart.invalidate();
-
-        // got help from:
-        // https://www.geeksforgeeks.org/android/point-graph-series-in-android/
+        // add this graph line to the list of lines
+        graphLines.add(weightDataSet);
     }
 
-    private void updateDisplayValues() {
-        // update 'goal weight'
+    private void setupGraphGoalWeightLine() {
+        // check if a valid goal weight is set
         float goalWeight = storage.getGoalWeight();
-        if (goalWeight == LocalStorage.UNKNOWN) {
-            binding.goalWeight.setText(R.string.no_goal_weight);
-        } else {
-            binding.goalWeight.setText(UnitConverter.poundsToFormattedUnitString(requireContext(), goalWeight, unit));
-        }
+        if (goalWeight == LocalStorage.UNKNOWN) return;
+
+        // set up color variables
+        int goalWeightLineColor = ContextCompat.getColor(requireContext(), R.color.graph_goal_weight_line);
+
+        // convert to local units and add to graph
+        goalWeight = UnitConverter.unitToPounds(goalWeight, unit);
+        List<Entry> goalEntries = new ArrayList<>();
+        goalEntries.add(new Entry(0.9f, goalWeight));
+        goalEntries.add(new Entry(4.1f, goalWeight));
+
+        // set up goal weight line settings, dashed line that is straight
+        LineDataSet goalDataSet = new LineDataSet(goalEntries, "Goal");
+        goalDataSet.setColor(goalWeightLineColor);
+        goalDataSet.setLineWidth(4f);
+        goalDataSet.enableDashedLine(20f, 15f, 0f);
+        goalDataSet.setDrawCircles(false);
+        goalDataSet.setDrawValues(false);
+
+        // add this graph line to the list of lines
+        graphLines.add(goalDataSet);
+    }
+
+    private void renderGraph() {
+        LineChart graph = binding.graph;
+
+        // add all the graph lines to the graph
+        LineData data = new LineData(graphLines);
+        graph.setData(data);
+
+        // cause the graph to redraw
+        graph.invalidate();
     }
 
     @Override
