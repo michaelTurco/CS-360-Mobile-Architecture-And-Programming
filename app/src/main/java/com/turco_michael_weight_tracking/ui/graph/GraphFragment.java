@@ -45,6 +45,7 @@ public class GraphFragment extends Fragment {
 
         setupButtonEvents();
         updateDisplayValues();
+
         setupGraphSettings();
         setupGraphWeightLine();
         setupGraphGoalWeightLine();
