@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -62,15 +63,20 @@ public class GraphFragment extends Fragment {
         chart.setTouchEnabled(true);
         chart.setPinchZoom(true);
         chart.setScaleEnabled(true);
-        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-        chart.getXAxis().setTextSize(14f);
-        chart.getXAxis().setDrawGridLines(false);
-        chart.getXAxis().setDrawGridLines(true);
-        chart.getXAxis().setGridLineWidth(1f);
         chart.getAxisRight().setEnabled(false);
-        chart.getAxisLeft().setDrawGridLines(true);
-        chart.getAxisLeft().setTextSize(14f);
-        chart.getAxisLeft().setGridLineWidth(1f);
+
+        // set up X axis
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(true);
+        xAxis.setGridLineWidth(1f);
+        xAxis.setTextSize(14f);
+
+        // set up Y axis
+        YAxis yAxis = chart.getAxisLeft();
+        yAxis.setDrawGridLines(true);
+        yAxis.setGridLineWidth(1f);
+        yAxis.setTextSize(14f);
 
         // set up the keys that show up on the bottom of the graph
         Legend legend = chart.getLegend();
