@@ -80,11 +80,11 @@ public class GraphFragment extends Fragment {
 
         // set up the keys that show up on the bottom of the graph
         Legend legend = chart.getLegend();
-        legend.setEnabled(true);
-        legend.setTextSize(14f);
-        legend.setFormSize(14f);
-        legend.setXEntrySpace(15f);
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        legend.setXEntrySpace(15f);
+        legend.setFormSize(14f);
+        legend.setTextSize(14f);
+        legend.setEnabled(true);
 
         // temp entries just for testing
         List<Entry> weightEntries = new ArrayList<>();
