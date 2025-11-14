@@ -59,6 +59,7 @@
     <string name="permission_deny">Reject</string>
 
     <string name="title_graph">Weight History Graph</string>
+    <string name="reset_graph">Reset Graph</string>
 
     <string name="no_records">No records</string>
     <string name="no_goal_weight">unset</string>

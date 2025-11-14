@@ -28,7 +28,7 @@
         app:cardElevation="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/graph">
+        app:layout_constraintTop_toBottomOf="@+id/reset_graph">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -76,5 +76,22 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/reset_graph"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="122dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="123dp"
+        android:backgroundTint="@color/blue_medium"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text="@string/reset_graph"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/graph" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
