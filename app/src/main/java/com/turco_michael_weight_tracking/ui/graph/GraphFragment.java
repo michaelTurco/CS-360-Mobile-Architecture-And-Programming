@@ -57,6 +57,9 @@ public class GraphFragment extends Fragment {
     private void setupButtonEvents() {
         // clicking the pencil button 'edit goal weight'
         binding.editGoalWeight.setOnClickListener(v -> NavigationUtils.navigateTo(this, R.id.navigation_settings));
+
+        // clicking the reset graph button
+        binding.resetGraph.setOnClickListener(v -> resetGraph());
     }
 
     private void updateDisplayValues() {
@@ -162,6 +165,16 @@ public class GraphFragment extends Fragment {
         // add all the graph lines to the graph
         LineData data = new LineData(graphLines);
         graph.setData(data);
+
+        // cause the graph to redraw
+        graph.invalidate();
+    }
+
+    private void resetGraph() {
+        LineChart graph = binding.graph;
+
+        // re center and align the graph position
+        graph.fitScreen();
 
         // cause the graph to redraw
         graph.invalidate();
