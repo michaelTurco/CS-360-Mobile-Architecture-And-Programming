@@ -142,7 +142,7 @@ public class GraphFragment extends Fragment {
         int goalWeightLineColor = ContextCompat.getColor(requireContext(), R.color.graph_goal_weight_line);
 
         // convert to local units and add to graph
-        goalWeight = UnitConverter.unitToPounds(goalWeight, unit);
+        goalWeight = UnitConverter.unitToUnit(goalWeight, MeasurementUnit.POUNDS, unit);
         List<Entry> goalEntries = new ArrayList<>();
         goalEntries.add(new Entry(0.9f, goalWeight));
         goalEntries.add(new Entry(4.1f, goalWeight));
