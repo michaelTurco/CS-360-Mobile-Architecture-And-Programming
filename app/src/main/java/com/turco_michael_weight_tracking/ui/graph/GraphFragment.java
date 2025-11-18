@@ -22,16 +22,20 @@ import com.turco_michael_weight_tracking.LocalStorage.MeasurementUnit;
 import com.turco_michael_weight_tracking.NavigationUtils;
 import com.turco_michael_weight_tracking.R;
 import com.turco_michael_weight_tracking.UnitConverter;
+import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.databinding.FragmentGraphBinding;
+import com.turco_michael_weight_tracking.ui.view_list.WeightEntry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class GraphFragment extends Fragment {
 
     private FragmentGraphBinding binding;
     private LocalStorage storage;
     private MeasurementUnit unit;
+    private UserDatabase db;
     private List<ILineDataSet> graphLines;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,6 +45,7 @@ public class GraphFragment extends Fragment {
 
         storage = new LocalStorage(requireContext());
         unit = storage.getMeasurementUnit();
+        db = new UserDatabase(getContext());
         graphLines = new ArrayList<>();
 
         setupButtonEvents();
@@ -112,12 +117,8 @@ public class GraphFragment extends Fragment {
         int circleColor = ContextCompat.getColor(requireContext(), R.color.graph_circle);
         int innerCircleColor = ContextCompat.getColor(requireContext(), R.color.graph_circle_hole);
 
-        // temp entries just for testing
-        List<Entry> weightEntries = new ArrayList<>();
-        weightEntries.add(new Entry(1, 180));
-        weightEntries.add(new Entry(2, 177));
-        weightEntries.add(new Entry(3, 176));
-        weightEntries.add(new Entry(4, 172));
+        // load weight data points
+        List<Entry> weightEntries = loadGraphWeightPoints();
 
         // set up weight points and line style
         LineDataSet weightDataSet = new LineDataSet(weightEntries, "Weight");
@@ -133,6 +134,24 @@ public class GraphFragment extends Fragment {
         graphLines.add(weightDataSet);
     }
 
+    private List<Entry> loadGraphWeightPoints() {
+        List<Entry> graphPoints = new ArrayList<>();
+        List<WeightEntry> weightEntries = db.getWeightEntries(UserDatabase.currentUserID);
+
+        for (WeightEntry entry : weightEntries) {
+            // referenced https://stackoverflow.com/questions/46424297/android-converting-the-time-in-milliseconds
+            long timeMS = entry.getDate().getTime();
+            long timeDays = TimeUnit.MILLISECONDS.toDays(timeMS);
+
+            float weight = entry.getWeight();
+            weight = UnitConverter.unitToUnit(weight, MeasurementUnit.POUNDS, unit);
+
+            graphPoints.add(new Entry(timeDays, weight));
+        }
+
+        return graphPoints;
+    }
+
     private void setupGraphGoalWeightLine() {
         // check if a valid goal weight is set
         float goalWeight = storage.getGoalWeight();
@@ -143,9 +162,7 @@ public class GraphFragment extends Fragment {
 
         // convert to local units and add to graph
         goalWeight = UnitConverter.unitToUnit(goalWeight, MeasurementUnit.POUNDS, unit);
-        List<Entry> goalEntries = new ArrayList<>();
-        goalEntries.add(new Entry(0.9f, goalWeight));
-        goalEntries.add(new Entry(4.1f, goalWeight));
+        List<Entry> goalEntries = loadGraphGoalLine(goalWeight);
 
         // set up goal weight line settings, dashed line that is straight
         LineDataSet goalDataSet = new LineDataSet(goalEntries, "Goal");
@@ -157,6 +174,35 @@ public class GraphFragment extends Fragment {
 
         // add this graph line to the list of lines
         graphLines.add(goalDataSet);
+    }
+
+    private List<Entry> loadGraphGoalLine(float goalWeight) {
+        List<Entry> graphPoints = new ArrayList<>();
+        List<WeightEntry> weightEntries = db.getWeightEntries(UserDatabase.currentUserID);
+
+        long minimumDays = Integer.MAX_VALUE;
+        long maximumDays = 0;
+
+        for (WeightEntry entry : weightEntries) {
+            long timeMS = entry.getDate().getTime();
+            long timeDays = TimeUnit.MILLISECONDS.toDays(timeMS);
+
+            if (maximumDays < timeDays) maximumDays = timeDays;
+            if (minimumDays > timeDays) minimumDays = timeDays;
+        }
+
+        // if no entries, put the graph around today
+        if (weightEntries.isEmpty()) {
+            long timeMS = System.currentTimeMillis();
+            long timeDays = TimeUnit.MILLISECONDS.toDays(timeMS);
+            minimumDays = timeDays;
+            maximumDays = timeDays;
+        }
+
+        graphPoints.add(new Entry(minimumDays - 1, goalWeight));
+        graphPoints.add(new Entry(maximumDays + 1, goalWeight));
+
+        return graphPoints;
     }
 
     private void renderGraph() {
