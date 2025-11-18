@@ -139,9 +139,8 @@ public class GraphFragment extends Fragment {
         List<WeightEntry> weightEntries = db.getWeightEntries(UserDatabase.currentUserID);
 
         for (WeightEntry entry : weightEntries) {
-            // referenced https://stackoverflow.com/questions/46424297/android-converting-the-time-in-milliseconds
             long timeMS = entry.getDate().getTime();
-            long timeDays = TimeUnit.MILLISECONDS.toDays(timeMS);
+            float timeDays = timeMS / 86_400_000f;
 
             float weight = entry.getWeight();
             weight = UnitConverter.unitToUnit(weight, MeasurementUnit.POUNDS, unit);
@@ -180,12 +179,12 @@ public class GraphFragment extends Fragment {
         List<Entry> graphPoints = new ArrayList<>();
         List<WeightEntry> weightEntries = db.getWeightEntries(UserDatabase.currentUserID);
 
-        long minimumDays = Integer.MAX_VALUE;
-        long maximumDays = 0;
+        float minimumDays = Float.MAX_VALUE;
+        float maximumDays = 0;
 
         for (WeightEntry entry : weightEntries) {
             long timeMS = entry.getDate().getTime();
-            long timeDays = TimeUnit.MILLISECONDS.toDays(timeMS);
+            float timeDays = timeMS / 86_400_000f;
 
             if (maximumDays < timeDays) maximumDays = timeDays;
             if (minimumDays > timeDays) minimumDays = timeDays;
