@@ -48,6 +48,11 @@ public class HomeFragment extends Fragment {
         binding.editGoalWeight.setOnClickListener(v ->
                 NavigationUtils.navigateTo(this, R.id.navigation_settings)
         );
+
+        // clicking the graph button 'weight history graph'
+        binding.viewGraph.setOnClickListener(v ->
+                NavigationUtils.navigateTo(this, R.id.navigation_graph)
+        );
     }
 
     private void setWelcomeText() {
