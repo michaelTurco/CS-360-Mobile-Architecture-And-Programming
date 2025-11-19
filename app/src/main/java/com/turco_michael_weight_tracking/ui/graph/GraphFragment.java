@@ -201,8 +201,11 @@ public class GraphFragment extends Fragment {
             maximumDays = timeDays;
         }
 
-        graphPoints.add(new Entry(minimumDays - 1, goalWeight));
-        graphPoints.add(new Entry(maximumDays + 1, goalWeight));
+        float difference = maximumDays - minimumDays;
+        float extraDistance = difference * 0.1f;
+
+        graphPoints.add(new Entry(minimumDays - extraDistance, goalWeight));
+        graphPoints.add(new Entry(maximumDays + extraDistance, goalWeight));
 
         return graphPoints;
     }
