@@ -90,6 +90,7 @@ public class GraphFragment extends Fragment {
         graph.setPinchZoom(true);
         graph.setScaleEnabled(true);
         graph.getAxisRight().setEnabled(false);
+        graph.setDragDecelerationEnabled(false);
 
         // set up X axis
         XAxis xAxis = graph.getXAxis();
