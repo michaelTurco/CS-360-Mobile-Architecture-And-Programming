@@ -148,6 +148,9 @@ public class GraphFragment extends Fragment {
             graphPoints.add(new Entry(timeDays, weight));
         }
 
+        // sort the list by x value
+        graphPoints.sort((a, b) -> Float.compare(a.getX(), b.getX()));
+
         return graphPoints;
     }
 
