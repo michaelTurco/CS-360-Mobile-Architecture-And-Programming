@@ -97,6 +97,7 @@ public class GraphFragment extends Fragment {
         xAxis.setDrawGridLines(true);
         xAxis.setGridLineWidth(1f);
         xAxis.setTextSize(14f);
+        xAxis.setLabelCount(4);
 
         // set up x axis formatter
         xAxis.setValueFormatter(new ValueFormatter() {
