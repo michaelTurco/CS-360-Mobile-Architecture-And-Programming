@@ -16,6 +16,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.turco_michael_weight_tracking.LocalStorage;
 import com.turco_michael_weight_tracking.LocalStorage.MeasurementUnit;
@@ -26,11 +27,15 @@ import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.databinding.FragmentGraphBinding;
 import com.turco_michael_weight_tracking.ui.view_list.WeightEntry;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.Locale;
 
 public class GraphFragment extends Fragment {
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("M/d", Locale.getDefault());
+    private final SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a", Locale.getDefault());
 
     private FragmentGraphBinding binding;
     private LocalStorage storage;
@@ -93,6 +98,14 @@ public class GraphFragment extends Fragment {
         xAxis.setGridLineWidth(1f);
         xAxis.setTextSize(14f);
 
+        // set up x axis formatter
+        xAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return formatDayValue(value);
+            }
+        });
+
         // set up Y axis
         YAxis yAxis = graph.getAxisLeft();
         yAxis.setDrawGridLines(true);
@@ -140,12 +153,12 @@ public class GraphFragment extends Fragment {
 
         for (WeightEntry entry : weightEntries) {
             long timeMS = entry.getDate().getTime();
-            float timeDays = timeMS / 86_400_000f;
+            float timeSec = timeMS / 1000f;
 
             float weight = entry.getWeight();
             weight = UnitConverter.unitToUnit(weight, MeasurementUnit.POUNDS, unit);
 
-            graphPoints.add(new Entry(timeDays, weight));
+            graphPoints.add(new Entry(timeSec, weight));
         }
 
         // sort the list by x value
@@ -182,30 +195,30 @@ public class GraphFragment extends Fragment {
         List<Entry> graphPoints = new ArrayList<>();
         List<WeightEntry> weightEntries = db.getWeightEntries(UserDatabase.currentUserID);
 
-        float minimumDays = Float.MAX_VALUE;
-        float maximumDays = 0;
+        float minimumSec = Float.MAX_VALUE;
+        float maximumSec = 0;
 
         for (WeightEntry entry : weightEntries) {
             long timeMS = entry.getDate().getTime();
-            float timeDays = timeMS / 86_400_000f;
+            float timeSec = timeMS / 1000f;
 
-            if (maximumDays < timeDays) maximumDays = timeDays;
-            if (minimumDays > timeDays) minimumDays = timeDays;
+            if (maximumSec < timeSec) maximumSec = timeSec;
+            if (minimumSec > timeSec) minimumSec = timeSec;
         }
 
-        // if no entries, put the graph around today
-        if (weightEntries.isEmpty()) {
+        // if too few entries, put the graph around today
+        if (weightEntries.size() < 2) {
             long timeMS = System.currentTimeMillis();
-            long timeDays = TimeUnit.MILLISECONDS.toDays(timeMS);
-            minimumDays = timeDays;
-            maximumDays = timeDays;
+            float timeSec = timeMS / 1000f;
+            minimumSec = timeSec - 7200;
+            maximumSec = timeSec + 7200;
         }
 
-        float difference = maximumDays - minimumDays;
+        float difference = (maximumSec - minimumSec) + 3600;
         float extraDistance = difference * 0.1f;
 
-        graphPoints.add(new Entry(minimumDays - extraDistance, goalWeight));
-        graphPoints.add(new Entry(maximumDays + extraDistance, goalWeight));
+        graphPoints.add(new Entry(minimumSec - extraDistance, goalWeight));
+        graphPoints.add(new Entry(maximumSec + extraDistance, goalWeight));
 
         return graphPoints;
     }
@@ -229,6 +242,17 @@ public class GraphFragment extends Fragment {
 
         // cause the graph to redraw
         graph.invalidate();
+    }
+
+    private String formatDayValue(float value) {
+        long timeMS = (long) value * 1000L;
+        float range = binding.graph.getVisibleXRange();
+
+        if (range > 76800) {
+            return dateFormat.format(new Date(timeMS));
+        } else {
+            return timeFormat.format(new Date(timeMS));
+        }
     }
 
     @Override
