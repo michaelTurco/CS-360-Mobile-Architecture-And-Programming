@@ -67,5 +67,6 @@
     <string name="no_goal_weight">unset</string>
     <string name="temporary">Temporary</string>
     <string name="error_empty">""</string>
+    <string name="not_applicable">N/A</string>
 
 </resources>

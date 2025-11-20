@@ -62,6 +62,7 @@ public class GraphFragment extends Fragment {
         setupGraphSettings();
         setupGraphWeightLine();
         setupGraphGoalWeightLine();
+        setupGraphPredictionLine();
         renderGraph();
 
         return root;
@@ -212,13 +213,104 @@ public class GraphFragment extends Fragment {
     private List<Entry> loadGraphGoalLine(float goalWeight) {
         List<Entry> graphPoints = new ArrayList<>();
 
-        float difference = (graphMaxSec - graphMinSec) + 3600;
-        float extra = difference * 0.1f;
+        // add extra space to the left and right
+        float difference = (graphMaxSec - graphMinSec) + 7200;
+        float extra = difference * 0.2f;
 
         graphPoints.add(new Entry(graphMinSec - extra, goalWeight));
         graphPoints.add(new Entry(graphMaxSec + extra, goalWeight));
 
         return graphPoints;
+    }
+
+    private void setupGraphPredictionLine() {
+        // check if a valid goal weight is set
+        float goalWeight = storage.getGoalWeight();
+        if (goalWeight == LocalStorage.UNKNOWN) return;
+
+        // set up color variables
+        int trendLineColor = ContextCompat.getColor(requireContext(), R.color.graph_trend_line);
+
+        List<Entry> weights = loadGraphWeightPoints();
+        if (weights.size() < 2) return;
+
+        // set up goal trend line settings, green dashed line
+        List<Entry> trendEntries = createPredictionLine(weights, goalWeight);
+        if (trendEntries != null) {
+            LineDataSet trendDataSet = new LineDataSet(trendEntries, "Trend");
+            trendDataSet.setColor(trendLineColor);
+            trendDataSet.setLineWidth(4f);
+            trendDataSet.enableDashedLine(20f, 15f, 0f);
+            trendDataSet.setDrawCircles(false);
+            trendDataSet.setDrawValues(false);
+
+            // add this graph line to the list of lines
+            graphLines.add(trendDataSet);
+        }
+    }
+
+    private List<Entry> createPredictionLine(List<Entry> weightEntries, float goalWeightPounds) {
+        List<Entry> graphEntries = new ArrayList<>();
+        float goalWeight = UnitConverter.unitToUnit(goalWeightPounds, MeasurementUnit.POUNDS, unit);
+
+        // using weighted linear regression to draw a line that fits all the points.
+        // modified a bit to favor recent data entries more heavily, and older data entries less heavily
+        // got help from https://en.wikipedia.org/wiki/Simple_linear_regression
+
+        // weight decay is exponential, and uses a 7-day time scale
+        float decay = 86400f * 7f;
+
+        // weighted linear regression components
+        double sumW = 0;   // sum of weights
+        double sumWX = 0;  // sum of weights * x value
+        double sumWY = 0;  // sum of weights * y value
+        double sumWXX = 0; // sum of weights * x value squared
+        double sumWXY = 0; // sum of weights * x value * y value
+
+        // loop through entries and calculate weighted sum
+        for (Entry entry : weightEntries) {
+            float x = entry.getX();
+            float y = entry.getY();
+
+            double w = Math.exp((x - graphMaxSec) / decay);
+
+            sumW += w;
+            sumWX += w * x;
+            sumWY += w * y;
+            sumWXX += w * x * x;
+            sumWXY += w * x * y;
+        }
+
+        double denominator = (sumW * sumWXX - sumWX * sumWX);
+        if (denominator == 0) {
+            // update estimated time remaining text, invalid time
+            binding.estimatedTime.setText(R.string.not_applicable);
+            return null;
+        }
+
+        // solve for linear regression coefficients in 'y = a + b*x' formula
+        double a = (sumWXX * sumWY - sumWX * sumWXY) / denominator; // intercept
+        double b = (sumW * sumWXY - sumWX * sumWY) / denominator;   // slope
+
+        // replace formula variables:
+        // y = a + b * x
+        // goalWeight = intercept + slope * time;
+        // solve for the estimated goal time
+        double timeGoal = (goalWeight - a) / b;
+        float daysUntilGoal = (float) ((timeGoal - graphMaxSec) / 86400f);
+        if (daysUntilGoal < 0) daysUntilGoal = 0;
+
+        // update estimated time remaining text
+        binding.estimatedTime.setText(String.format(Locale.getDefault(), "%.1f days", daysUntilGoal));
+
+        // add extra space to the left and right
+        float difference = (graphMaxSec - graphMinSec) + 7200;
+        float extra = difference * 0.2f;
+
+        graphEntries.add(new Entry(graphMinSec - extra, (float) (a + b * graphMinSec)));
+        graphEntries.add(new Entry(graphMaxSec + extra, (float) (a + b * graphMaxSec)));
+
+        return graphEntries;
     }
 
     private void renderGraph() {

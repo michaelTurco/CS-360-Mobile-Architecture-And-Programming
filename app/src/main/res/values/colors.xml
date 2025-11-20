@@ -23,5 +23,6 @@
     <color name="graph_circle">#FF914FE2</color>
     <color name="graph_circle_hole">#FFFFFFFF</color>
     <color name="graph_goal_weight_line">#FFEA3427</color>
+    <color name="graph_trend_line">#FF04D84E</color>
     <color name="transparent_75">#4B000000</color>
 </resources>
