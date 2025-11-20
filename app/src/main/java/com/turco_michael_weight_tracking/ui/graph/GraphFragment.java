@@ -43,6 +43,9 @@ public class GraphFragment extends Fragment {
     private UserDatabase db;
     private List<ILineDataSet> graphLines;
 
+    private float graphMinSec;
+    private float graphMaxSec;
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentGraphBinding.inflate(inflater, container, false);
@@ -153,14 +156,27 @@ public class GraphFragment extends Fragment {
         List<Entry> graphPoints = new ArrayList<>();
         List<WeightEntry> weightEntries = db.getWeightEntries(UserDatabase.currentUserID);
 
+        graphMinSec = Float.MAX_VALUE;
+        graphMaxSec = 0;
+
         for (WeightEntry entry : weightEntries) {
-            long timeMS = entry.getDate().getTime();
-            float timeSec = timeMS / 1000f;
+            float timeSec = entry.getDate().getTime() / 1000f;
+
+            // store min and max of graph timestamp data
+            if (graphMinSec > timeSec) graphMinSec = timeSec;
+            if (graphMaxSec < timeSec) graphMaxSec = timeSec;
 
             float weight = entry.getWeight();
             weight = UnitConverter.unitToUnit(weight, MeasurementUnit.POUNDS, unit);
 
             graphPoints.add(new Entry(timeSec, weight));
+        }
+
+        // if too few entries, set the min and max within 4 hours of right now
+        if (weightEntries.size() < 2) {
+            float timeSec = System.currentTimeMillis() / 1000f;
+            graphMinSec = timeSec - 7200;
+            graphMaxSec = timeSec + 7200;
         }
 
         // sort the list by x value
@@ -195,30 +211,12 @@ public class GraphFragment extends Fragment {
 
     private List<Entry> loadGraphGoalLine(float goalWeight) {
         List<Entry> graphPoints = new ArrayList<>();
-        List<WeightEntry> weightEntries = db.getWeightEntries(UserDatabase.currentUserID);
 
-        float minimumSec = Float.MAX_VALUE;
-        float maximumSec = 0;
-
-        for (WeightEntry entry : weightEntries) {
-            float timeSec = entry.getDate().getTime() / 1000f;
-
-            if (maximumSec < timeSec) maximumSec = timeSec;
-            if (minimumSec > timeSec) minimumSec = timeSec;
-        }
-
-        // if too few entries, put the graph around today
-        if (weightEntries.size() < 2) {
-            float timeSec = System.currentTimeMillis() / 1000f;
-            minimumSec = timeSec - 7200;
-            maximumSec = timeSec + 7200;
-        }
-
-        float difference = (maximumSec - minimumSec) + 3600;
+        float difference = (graphMaxSec - graphMinSec) + 3600;
         float extra = difference * 0.1f;
 
-        graphPoints.add(new Entry(minimumSec - extra, goalWeight));
-        graphPoints.add(new Entry(maximumSec + extra, goalWeight));
+        graphPoints.add(new Entry(graphMinSec - extra, goalWeight));
+        graphPoints.add(new Entry(graphMaxSec + extra, goalWeight));
 
         return graphPoints;
     }
