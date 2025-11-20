@@ -201,8 +201,7 @@ public class GraphFragment extends Fragment {
         float maximumSec = 0;
 
         for (WeightEntry entry : weightEntries) {
-            long timeMS = entry.getDate().getTime();
-            float timeSec = timeMS / 1000f;
+            float timeSec = entry.getDate().getTime() / 1000f;
 
             if (maximumSec < timeSec) maximumSec = timeSec;
             if (minimumSec > timeSec) minimumSec = timeSec;
@@ -210,17 +209,16 @@ public class GraphFragment extends Fragment {
 
         // if too few entries, put the graph around today
         if (weightEntries.size() < 2) {
-            long timeMS = System.currentTimeMillis();
-            float timeSec = timeMS / 1000f;
+            float timeSec = System.currentTimeMillis() / 1000f;
             minimumSec = timeSec - 7200;
             maximumSec = timeSec + 7200;
         }
 
         float difference = (maximumSec - minimumSec) + 3600;
-        float extraDistance = difference * 0.1f;
+        float extra = difference * 0.1f;
 
-        graphPoints.add(new Entry(minimumSec - extraDistance, goalWeight));
-        graphPoints.add(new Entry(maximumSec + extraDistance, goalWeight));
+        graphPoints.add(new Entry(minimumSec - extra, goalWeight));
+        graphPoints.add(new Entry(maximumSec + extra, goalWeight));
 
         return graphPoints;
     }
@@ -248,9 +246,9 @@ public class GraphFragment extends Fragment {
 
     private String formatDayValue(float value) {
         long timeMS = (long) value * 1000L;
-        float range = binding.graph.getVisibleXRange();
+        float rangeSec = binding.graph.getVisibleXRange();
 
-        if (range > 76800) {
+        if (rangeSec > 76800) {
             return dateFormat.format(new Date(timeMS));
         } else {
             return timeFormat.format(new Date(timeMS));
