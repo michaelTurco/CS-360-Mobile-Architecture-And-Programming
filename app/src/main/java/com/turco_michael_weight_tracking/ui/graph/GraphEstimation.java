@@ -32,10 +32,10 @@ public class GraphEstimation {
     private float minTimeSeconds;
     private float maxTimeSeconds;
 
-    public GraphEstimation(LocalStorage storage, UserDatabase db, Context context) {
+    public GraphEstimation(LocalStorage storage, Context context) {
         this.storage = storage;
         this.unit = storage.getMeasurementUnit();
-        this.db = db;
+        this.db = new UserDatabase(context);
         this.context = context;
 
         loadDatabaseValues();

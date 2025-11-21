@@ -16,11 +16,13 @@ import com.turco_michael_weight_tracking.R;
 import com.turco_michael_weight_tracking.UnitConverter;
 import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.databinding.FragmentHomeBinding;
+import com.turco_michael_weight_tracking.ui.graph.GraphEstimation;
 
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private LocalStorage storage;
+    private GraphEstimation graphEstimation;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -29,6 +31,7 @@ public class HomeFragment extends Fragment {
         View root = binding.getRoot();
 
         storage = new LocalStorage(requireContext());
+        graphEstimation = new GraphEstimation(storage, requireContext());
 
         setupButtonEvents();
         setWelcomeText();
@@ -81,6 +84,9 @@ public class HomeFragment extends Fragment {
         } else {
             binding.goalWeight.setText(UnitConverter.poundsToFormattedUnitString(requireContext(), goalWeight, unit));
         }
+
+        // update 'goal reached estimation'
+        binding.estimatedTime.setText(graphEstimation.getFormattedEstimatedTime());
     }
 
     private void attemptNotificationRequest() {

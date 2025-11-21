@@ -39,7 +39,6 @@ public class GraphFragment extends Fragment {
     private FragmentGraphBinding binding;
     private LocalStorage storage;
     private MeasurementUnit unit;
-    private UserDatabase db;
     private List<ILineDataSet> graphLines;
     private GraphEstimation graphEstimation;
 
@@ -50,9 +49,8 @@ public class GraphFragment extends Fragment {
 
         storage = new LocalStorage(requireContext());
         unit = storage.getMeasurementUnit();
-        db = new UserDatabase(getContext());
         graphLines = new ArrayList<>();
-        graphEstimation = new GraphEstimation(storage, db, requireContext());
+        graphEstimation = new GraphEstimation(storage, requireContext());
 
         setupGraphSettings();
         setupGraphWeightLine();
