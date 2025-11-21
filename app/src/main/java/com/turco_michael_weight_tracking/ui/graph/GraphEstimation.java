@@ -143,7 +143,10 @@ public class GraphEstimation {
         // solve for the estimated goal time
         double timeGoal = (getGoalWeight() - a) / b;
         estimatedGoalDays = (float) ((timeGoal - maxTimeSeconds) / 86400f);
-        if (estimatedGoalDays < 0) estimatedGoalDays = 0;
+
+        // if the estimate says over 3 days ago, assume it is unknown instead
+        if (estimatedGoalDays < -3) estimatedGoalDays = UNKNOWN_TIME;
+        else if (estimatedGoalDays < 0) estimatedGoalDays = 0;
 
         // add extra space to the left and right
         float difference = (maxTimeSeconds - minTimeSeconds) + 7200;
@@ -172,6 +175,12 @@ public class GraphEstimation {
     public String getFormattedEstimatedTime() {
         if (estimatedGoalDays == UNKNOWN_TIME) {
             return context.getString(R.string.not_applicable);
+        }
+        if (estimatedGoalDays > 999) { // if over 3 years, don't show estimation
+            return context.getString(R.string.not_applicable);
+        }
+        if (estimatedGoalDays > 30) { // if over a month, don't show decimal values
+            return String.format(Locale.getDefault(), "%.0f days", estimatedGoalDays);
         }
         return String.format(Locale.getDefault(), "%.1f days", estimatedGoalDays);
     }
