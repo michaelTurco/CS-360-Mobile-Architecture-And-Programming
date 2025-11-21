@@ -232,7 +232,11 @@ public class GraphFragment extends Fragment {
         int trendLineColor = ContextCompat.getColor(requireContext(), R.color.graph_trend_line);
 
         List<Entry> weights = loadGraphWeightPoints();
-        if (weights.size() < 2) return;
+        if (weights.size() < 2) {
+            // if not enough entries, can't calculate the estimated time
+            binding.estimatedTime.setText(R.string.not_applicable);
+            return;
+        }
 
         // set up goal trend line settings, green dashed line
         List<Entry> trendEntries = createPredictionLine(weights, goalWeight);
