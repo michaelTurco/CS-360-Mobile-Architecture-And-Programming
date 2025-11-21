@@ -222,8 +222,10 @@ public class GraphFragment extends Fragment {
         float rangeSec = binding.graph.getVisibleXRange();
 
         if (rangeSec > 76800) {
+            // when range is larger than 1 day, use 'month/day' format
             return dateFormat.format(new Date(timeMS));
         } else {
+            // when range is less than 1 day, use 'hour:minute am/pm' format
             return timeFormat.format(new Date(timeMS));
         }
     }
