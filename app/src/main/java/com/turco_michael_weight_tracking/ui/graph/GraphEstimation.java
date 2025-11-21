@@ -19,10 +19,13 @@ public class GraphEstimation {
 
     private List<WeightEntry> weightEntries;
     private List<Entry> graphWeightPoints;
+    private List<Entry> graphGoalPoints;
+    private List<Entry> graphEstimationPoints;
     private float goalWeight;
+    private float estimatedGoalDays;
 
-    public float minTimeSeconds;
-    public float maxTimeSeconds;
+    private float minTimeSeconds;
+    private float maxTimeSeconds;
 
     public GraphEstimation(LocalStorage storage, UserDatabase db) {
         this.storage = storage;
@@ -31,6 +34,8 @@ public class GraphEstimation {
 
         loadDatabaseValues();
         loadGraphWeightPoints();
+        loadGraphGoalPoints();
+        calculateEstimationPoints();
     }
 
     private void loadDatabaseValues() {
@@ -71,8 +76,87 @@ public class GraphEstimation {
         graphWeightPoints.sort((a, b) -> Float.compare(a.getX(), b.getX()));
     }
 
+    private void loadGraphGoalPoints() {
+        graphGoalPoints = new ArrayList<>();
+
+        // add extra space to the left and right
+        float difference = (maxTimeSeconds - minTimeSeconds) + 7200;
+        float extra = difference * 0.2f;
+
+        graphGoalPoints.add(new Entry(minTimeSeconds - extra, goalWeight));
+        graphGoalPoints.add(new Entry(maxTimeSeconds + extra, goalWeight));
+    }
+
+    private void calculateEstimationPoints() {
+        estimatedGoalDays = UNKNOWN_TIME;
+        graphEstimationPoints = null;
+
+        // need at least 2 data points in order to calculate trend
+        if (graphWeightPoints.size() < 2) return;
+
+        graphEstimationPoints = new ArrayList<>();
+
+        // using weighted linear regression to draw a line that fits all the points.
+        // modified a bit to favor recent data entries more heavily, and older data entries less heavily
+        // got help from https://en.wikipedia.org/wiki/Simple_linear_regression
+
+        // weight decay is exponential, and uses a 7-day time scale
+        float decay = 86400f * 7f;
+
+        // weighted linear regression components
+        double sumW = 0;   // sum of weights
+        double sumWX = 0;  // sum of weights * x value
+        double sumWY = 0;  // sum of weights * y value
+        double sumWXX = 0; // sum of weights * x value squared
+        double sumWXY = 0; // sum of weights * x value * y value
+
+        // loop through entries and calculate weighted sum
+        for (Entry entry : graphWeightPoints) {
+            float x = entry.getX();
+            float y = entry.getY();
+
+            double w = Math.exp((x - maxTimeSeconds) / decay);
+
+            sumW += w;
+            sumWX += w * x;
+            sumWY += w * y;
+            sumWXX += w * x * x;
+            sumWXY += w * x * y;
+        }
+
+        double denominator = (sumW * sumWXX - sumWX * sumWX);
+        if (denominator == 0) return;
+
+        // solve for linear regression coefficients in 'y = a + b*x' formula
+        double a = (sumWXX * sumWY - sumWX * sumWXY) / denominator; // intercept
+        double b = (sumW * sumWXY - sumWX * sumWY) / denominator;   // slope
+
+        // replace formula variables:
+        // y = a + b * x
+        // goalWeight = intercept + slope * time;
+        // solve for the estimated goal time
+        double timeGoal = (getGoalWeight() - a) / b;
+        estimatedGoalDays = (float) ((timeGoal - maxTimeSeconds) / 86400f);
+        if (estimatedGoalDays < 0) estimatedGoalDays = 0;
+
+        // add extra space to the left and right
+        float difference = (maxTimeSeconds - minTimeSeconds) + 7200;
+        float extra = difference * 0.2f;
+
+        graphEstimationPoints.add(new Entry(minTimeSeconds - extra, (float) (a + b * minTimeSeconds)));
+        graphEstimationPoints.add(new Entry(maxTimeSeconds + extra, (float) (a + b * maxTimeSeconds)));
+    }
+
     public List<Entry> getGraphWeightPoints() {
         return graphWeightPoints;
+    }
+
+    public List<Entry> getGraphGoalPoints() {
+        return graphGoalPoints;
+    }
+
+    public List<Entry> getGraphEstimationPoints() {
+        return graphEstimationPoints;
     }
 
     public float getGoalWeight() {

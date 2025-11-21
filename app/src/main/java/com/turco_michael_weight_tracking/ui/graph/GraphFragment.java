@@ -152,16 +152,14 @@ public class GraphFragment extends Fragment {
     }
 
     private void setupGraphGoalWeightLine() {
-        // check if a valid goal weight is set
-        float goalWeight = storage.getGoalWeight();
-        if (goalWeight == LocalStorage.UNKNOWN) return;
+        // if no goal weight is set, can't draw goal line
+        if (graphEstimation.getGoalWeight() == LocalStorage.UNKNOWN) return;
 
         // set up color variables
         int goalWeightLineColor = ContextCompat.getColor(requireContext(), R.color.graph_goal_weight_line);
 
-        // convert to local units and add to graph
-        goalWeight = UnitConverter.unitToUnit(goalWeight, MeasurementUnit.POUNDS, unit);
-        List<Entry> goalEntries = loadGraphGoalLine(goalWeight);
+        // load goal line data
+        List<Entry> goalEntries = graphEstimation.getGraphGoalPoints();
 
         // set up goal weight line settings, dashed line that is straight
         LineDataSet goalDataSet = new LineDataSet(goalEntries, "Goal");
@@ -175,109 +173,27 @@ public class GraphFragment extends Fragment {
         graphLines.add(goalDataSet);
     }
 
-    private List<Entry> loadGraphGoalLine(float goalWeight) {
-        List<Entry> graphPoints = new ArrayList<>();
-
-        // add extra space to the left and right
-        float difference = (graphEstimation.maxTimeSeconds - graphEstimation.minTimeSeconds) + 7200;
-        float extra = difference * 0.2f;
-
-        graphPoints.add(new Entry(graphEstimation.minTimeSeconds - extra, goalWeight));
-        graphPoints.add(new Entry(graphEstimation.maxTimeSeconds + extra, goalWeight));
-
-        return graphPoints;
-    }
-
     private void setupGraphPredictionLine() {
-        // check if a valid goal weight is set
+        // if no goal weight is set, can't calculate prediction
         if (graphEstimation.getGoalWeight() == LocalStorage.UNKNOWN) return;
 
         // set up color variables
         int trendLineColor = ContextCompat.getColor(requireContext(), R.color.graph_trend_line);
 
-        List<Entry> weights = graphEstimation.getGraphWeightPoints();
-        if (weights.size() < 2) {
-            // if not enough entries, can't calculate the estimated time
-            binding.estimatedTime.setText(R.string.not_applicable);
-            return;
-        }
+        // load trend line data, return if null
+        List<Entry> trendEntries = graphEstimation.getGraphEstimationPoints();
+        if(trendEntries == null) return;
 
         // set up goal trend line settings, green dashed line
-        List<Entry> trendEntries = createPredictionLine(weights, graphEstimation.getGoalWeight());
-        if (trendEntries != null) {
-            LineDataSet trendDataSet = new LineDataSet(trendEntries, "Trend");
-            trendDataSet.setColor(trendLineColor);
-            trendDataSet.setLineWidth(4f);
-            trendDataSet.enableDashedLine(20f, 15f, 0f);
-            trendDataSet.setDrawCircles(false);
-            trendDataSet.setDrawValues(false);
+        LineDataSet trendDataSet = new LineDataSet(trendEntries, "Trend");
+        trendDataSet.setColor(trendLineColor);
+        trendDataSet.setLineWidth(4f);
+        trendDataSet.enableDashedLine(20f, 15f, 0f);
+        trendDataSet.setDrawCircles(false);
+        trendDataSet.setDrawValues(false);
 
-            // add this graph line to the list of lines
-            graphLines.add(trendDataSet);
-        }
-    }
-
-    private List<Entry> createPredictionLine(List<Entry> weightEntries, float goalWeightPounds) {
-        List<Entry> graphEntries = new ArrayList<>();
-
-        // using weighted linear regression to draw a line that fits all the points.
-        // modified a bit to favor recent data entries more heavily, and older data entries less heavily
-        // got help from https://en.wikipedia.org/wiki/Simple_linear_regression
-
-        // weight decay is exponential, and uses a 7-day time scale
-        float decay = 86400f * 7f;
-
-        // weighted linear regression components
-        double sumW = 0;   // sum of weights
-        double sumWX = 0;  // sum of weights * x value
-        double sumWY = 0;  // sum of weights * y value
-        double sumWXX = 0; // sum of weights * x value squared
-        double sumWXY = 0; // sum of weights * x value * y value
-
-        // loop through entries and calculate weighted sum
-        for (Entry entry : weightEntries) {
-            float x = entry.getX();
-            float y = entry.getY();
-
-            double w = Math.exp((x - graphEstimation.maxTimeSeconds) / decay);
-
-            sumW += w;
-            sumWX += w * x;
-            sumWY += w * y;
-            sumWXX += w * x * x;
-            sumWXY += w * x * y;
-        }
-
-        double denominator = (sumW * sumWXX - sumWX * sumWX);
-        if (denominator == 0) {
-            // update estimated time remaining text, invalid time
-            binding.estimatedTime.setText(R.string.not_applicable);
-            return null;
-        }
-
-        // solve for linear regression coefficients in 'y = a + b*x' formula
-        double a = (sumWXX * sumWY - sumWX * sumWXY) / denominator; // intercept
-        double b = (sumW * sumWXY - sumWX * sumWY) / denominator;   // slope
-
-        // replace formula variables:
-        // y = a + b * x
-        // goalWeight = intercept + slope * time;
-        // solve for the estimated goal time
-        double timeGoal = (graphEstimation.getGoalWeight() - a) / b;
-        float daysUntilGoal = (float) ((timeGoal - graphEstimation.maxTimeSeconds) / 86400f);
-        if (daysUntilGoal < 0) daysUntilGoal = 0;
-
-        // update estimated time remaining text
-        binding.estimatedTime.setText(String.format(Locale.getDefault(), "%.1f days", daysUntilGoal));
-
-        // add extra space to the left and right
-        float difference = (graphEstimation.maxTimeSeconds - graphEstimation.minTimeSeconds) + 7200;
-        float extra = difference * 0.2f;
-
-        graphEntries.add(new Entry(graphEstimation.minTimeSeconds - extra, (float) (a + b * graphEstimation.minTimeSeconds)));
-        graphEntries.add(new Entry(graphEstimation.maxTimeSeconds + extra, (float) (a + b * graphEstimation.maxTimeSeconds)));
-
-        return graphEntries;
+        // add this graph line to the list of lines
+        graphLines.add(trendDataSet);
     }
 
     private void renderGraph() {
