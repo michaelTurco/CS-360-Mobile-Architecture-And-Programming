@@ -52,16 +52,16 @@ public class GraphFragment extends Fragment {
         unit = storage.getMeasurementUnit();
         db = new UserDatabase(getContext());
         graphLines = new ArrayList<>();
-        graphEstimation = new GraphEstimation(storage, db);
-
-        setupButtonEvents();
-        updateDisplayValues();
+        graphEstimation = new GraphEstimation(storage, db, requireContext());
 
         setupGraphSettings();
         setupGraphWeightLine();
         setupGraphGoalWeightLine();
         setupGraphPredictionLine();
         renderGraph();
+
+        setupButtonEvents();
+        updateDisplayValues();
 
         return root;
     }
@@ -82,6 +82,9 @@ public class GraphFragment extends Fragment {
         } else {
             binding.goalWeight.setText(UnitConverter.poundsToFormattedUnitString(requireContext(), goalWeight, unit));
         }
+
+        // update 'goal reached estimation'
+        binding.estimatedTime.setText(graphEstimation.getFormattedEstimatedTime());
     }
 
     private void setupGraphSettings() {
@@ -182,7 +185,7 @@ public class GraphFragment extends Fragment {
 
         // load trend line data, return if null
         List<Entry> trendEntries = graphEstimation.getGraphEstimationPoints();
-        if(trendEntries == null) return;
+        if (trendEntries == null) return;
 
         // set up goal trend line settings, green dashed line
         LineDataSet trendDataSet = new LineDataSet(trendEntries, "Trend");

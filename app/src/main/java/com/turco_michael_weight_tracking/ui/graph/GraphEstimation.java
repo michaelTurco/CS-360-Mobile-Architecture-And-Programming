@@ -1,14 +1,18 @@
 package com.turco_michael_weight_tracking.ui.graph;
 
+import android.content.Context;
+
 import com.github.mikephil.charting.data.Entry;
 import com.turco_michael_weight_tracking.LocalStorage;
 import com.turco_michael_weight_tracking.LocalStorage.MeasurementUnit;
+import com.turco_michael_weight_tracking.R;
 import com.turco_michael_weight_tracking.UnitConverter;
 import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.ui.view_list.WeightEntry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class GraphEstimation {
     public static final float UNKNOWN_TIME = -1;
@@ -16,6 +20,7 @@ public class GraphEstimation {
     private final LocalStorage storage;
     private final MeasurementUnit unit;
     private final UserDatabase db;
+    private final Context context;
 
     private List<WeightEntry> weightEntries;
     private List<Entry> graphWeightPoints;
@@ -27,10 +32,11 @@ public class GraphEstimation {
     private float minTimeSeconds;
     private float maxTimeSeconds;
 
-    public GraphEstimation(LocalStorage storage, UserDatabase db) {
+    public GraphEstimation(LocalStorage storage, UserDatabase db, Context context) {
         this.storage = storage;
         this.unit = storage.getMeasurementUnit();
         this.db = db;
+        this.context = context;
 
         loadDatabaseValues();
         loadGraphWeightPoints();
@@ -161,5 +167,12 @@ public class GraphEstimation {
 
     public float getGoalWeight() {
         return goalWeight;
+    }
+
+    public String getFormattedEstimatedTime() {
+        if (estimatedGoalDays == UNKNOWN_TIME) {
+            return context.getString(R.string.not_applicable);
+        }
+        return String.format(Locale.getDefault(), "%.1f days", estimatedGoalDays);
     }
 }
