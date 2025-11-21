@@ -17,7 +17,9 @@ public class GraphEstimation {
     private final MeasurementUnit unit;
     private final UserDatabase db;
 
+    private List<WeightEntry> weightEntries;
     private List<Entry> graphWeightPoints;
+    private float goalWeight;
 
     public float minTimeSeconds;
     public float maxTimeSeconds;
@@ -27,11 +29,20 @@ public class GraphEstimation {
         this.unit = storage.getMeasurementUnit();
         this.db = db;
 
+        loadDatabaseValues();
         loadGraphWeightPoints();
     }
 
+    private void loadDatabaseValues() {
+        weightEntries = db.getWeightEntries(UserDatabase.currentUserID);
+
+        goalWeight = storage.getGoalWeight();
+        if (goalWeight != LocalStorage.UNKNOWN) {
+            UnitConverter.unitToUnit(goalWeight, MeasurementUnit.POUNDS, unit);
+        }
+    }
+
     private void loadGraphWeightPoints() {
-        List<WeightEntry> weightEntries = db.getWeightEntries(UserDatabase.currentUserID);
         graphWeightPoints = new ArrayList<>();
 
         minTimeSeconds = Float.MAX_VALUE;
@@ -62,5 +73,9 @@ public class GraphEstimation {
 
     public List<Entry> getGraphWeightPoints() {
         return graphWeightPoints;
+    }
+
+    public float getGoalWeight() {
+        return goalWeight;
     }
 }

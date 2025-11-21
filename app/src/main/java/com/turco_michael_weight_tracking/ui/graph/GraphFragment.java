@@ -190,8 +190,7 @@ public class GraphFragment extends Fragment {
 
     private void setupGraphPredictionLine() {
         // check if a valid goal weight is set
-        float goalWeight = storage.getGoalWeight();
-        if (goalWeight == LocalStorage.UNKNOWN) return;
+        if (graphEstimation.getGoalWeight() == LocalStorage.UNKNOWN) return;
 
         // set up color variables
         int trendLineColor = ContextCompat.getColor(requireContext(), R.color.graph_trend_line);
@@ -204,7 +203,7 @@ public class GraphFragment extends Fragment {
         }
 
         // set up goal trend line settings, green dashed line
-        List<Entry> trendEntries = createPredictionLine(weights, goalWeight);
+        List<Entry> trendEntries = createPredictionLine(weights, graphEstimation.getGoalWeight());
         if (trendEntries != null) {
             LineDataSet trendDataSet = new LineDataSet(trendEntries, "Trend");
             trendDataSet.setColor(trendLineColor);
@@ -220,7 +219,6 @@ public class GraphFragment extends Fragment {
 
     private List<Entry> createPredictionLine(List<Entry> weightEntries, float goalWeightPounds) {
         List<Entry> graphEntries = new ArrayList<>();
-        float goalWeight = UnitConverter.unitToUnit(goalWeightPounds, MeasurementUnit.POUNDS, unit);
 
         // using weighted linear regression to draw a line that fits all the points.
         // modified a bit to favor recent data entries more heavily, and older data entries less heavily
@@ -265,7 +263,7 @@ public class GraphFragment extends Fragment {
         // y = a + b * x
         // goalWeight = intercept + slope * time;
         // solve for the estimated goal time
-        double timeGoal = (goalWeight - a) / b;
+        double timeGoal = (graphEstimation.getGoalWeight() - a) / b;
         float daysUntilGoal = (float) ((timeGoal - graphEstimation.maxTimeSeconds) / 86400f);
         if (daysUntilGoal < 0) daysUntilGoal = 0;
 
