@@ -25,7 +25,6 @@ import com.turco_michael_weight_tracking.R;
 import com.turco_michael_weight_tracking.UnitConverter;
 import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.databinding.FragmentGraphBinding;
-import com.turco_michael_weight_tracking.ui.view_list.WeightEntry;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,9 +41,7 @@ public class GraphFragment extends Fragment {
     private MeasurementUnit unit;
     private UserDatabase db;
     private List<ILineDataSet> graphLines;
-
-    private float graphMinSec;
-    private float graphMaxSec;
+    private GraphEstimation graphEstimation;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -55,6 +52,7 @@ public class GraphFragment extends Fragment {
         unit = storage.getMeasurementUnit();
         db = new UserDatabase(getContext());
         graphLines = new ArrayList<>();
+        graphEstimation = new GraphEstimation(storage, db);
 
         setupButtonEvents();
         updateDisplayValues();
@@ -137,7 +135,7 @@ public class GraphFragment extends Fragment {
         int innerCircleColor = ContextCompat.getColor(requireContext(), R.color.graph_circle_hole);
 
         // load weight data points
-        List<Entry> weightEntries = loadGraphWeightPoints();
+        List<Entry> weightEntries = graphEstimation.getGraphWeightPoints();
 
         // set up weight points and line style
         LineDataSet weightDataSet = new LineDataSet(weightEntries, "Weight");
@@ -151,39 +149,6 @@ public class GraphFragment extends Fragment {
 
         // add this graph line to the list of lines
         graphLines.add(weightDataSet);
-    }
-
-    private List<Entry> loadGraphWeightPoints() {
-        List<Entry> graphPoints = new ArrayList<>();
-        List<WeightEntry> weightEntries = db.getWeightEntries(UserDatabase.currentUserID);
-
-        graphMinSec = Float.MAX_VALUE;
-        graphMaxSec = 0;
-
-        for (WeightEntry entry : weightEntries) {
-            float timeSec = entry.getDate().getTime() / 1000f;
-
-            // store min and max of graph timestamp data
-            if (graphMinSec > timeSec) graphMinSec = timeSec;
-            if (graphMaxSec < timeSec) graphMaxSec = timeSec;
-
-            float weight = entry.getWeight();
-            weight = UnitConverter.unitToUnit(weight, MeasurementUnit.POUNDS, unit);
-
-            graphPoints.add(new Entry(timeSec, weight));
-        }
-
-        // if too few entries, set the min and max within 4 hours of right now
-        if (weightEntries.size() < 2) {
-            float timeSec = System.currentTimeMillis() / 1000f;
-            graphMinSec = timeSec - 7200;
-            graphMaxSec = timeSec + 7200;
-        }
-
-        // sort the list by x value
-        graphPoints.sort((a, b) -> Float.compare(a.getX(), b.getX()));
-
-        return graphPoints;
     }
 
     private void setupGraphGoalWeightLine() {
@@ -214,11 +179,11 @@ public class GraphFragment extends Fragment {
         List<Entry> graphPoints = new ArrayList<>();
 
         // add extra space to the left and right
-        float difference = (graphMaxSec - graphMinSec) + 7200;
+        float difference = (graphEstimation.maxTimeSeconds - graphEstimation.minTimeSeconds) + 7200;
         float extra = difference * 0.2f;
 
-        graphPoints.add(new Entry(graphMinSec - extra, goalWeight));
-        graphPoints.add(new Entry(graphMaxSec + extra, goalWeight));
+        graphPoints.add(new Entry(graphEstimation.minTimeSeconds - extra, goalWeight));
+        graphPoints.add(new Entry(graphEstimation.maxTimeSeconds + extra, goalWeight));
 
         return graphPoints;
     }
@@ -231,7 +196,7 @@ public class GraphFragment extends Fragment {
         // set up color variables
         int trendLineColor = ContextCompat.getColor(requireContext(), R.color.graph_trend_line);
 
-        List<Entry> weights = loadGraphWeightPoints();
+        List<Entry> weights = graphEstimation.getGraphWeightPoints();
         if (weights.size() < 2) {
             // if not enough entries, can't calculate the estimated time
             binding.estimatedTime.setText(R.string.not_applicable);
@@ -276,7 +241,7 @@ public class GraphFragment extends Fragment {
             float x = entry.getX();
             float y = entry.getY();
 
-            double w = Math.exp((x - graphMaxSec) / decay);
+            double w = Math.exp((x - graphEstimation.maxTimeSeconds) / decay);
 
             sumW += w;
             sumWX += w * x;
@@ -301,18 +266,18 @@ public class GraphFragment extends Fragment {
         // goalWeight = intercept + slope * time;
         // solve for the estimated goal time
         double timeGoal = (goalWeight - a) / b;
-        float daysUntilGoal = (float) ((timeGoal - graphMaxSec) / 86400f);
+        float daysUntilGoal = (float) ((timeGoal - graphEstimation.maxTimeSeconds) / 86400f);
         if (daysUntilGoal < 0) daysUntilGoal = 0;
 
         // update estimated time remaining text
         binding.estimatedTime.setText(String.format(Locale.getDefault(), "%.1f days", daysUntilGoal));
 
         // add extra space to the left and right
-        float difference = (graphMaxSec - graphMinSec) + 7200;
+        float difference = (graphEstimation.maxTimeSeconds - graphEstimation.minTimeSeconds) + 7200;
         float extra = difference * 0.2f;
 
-        graphEntries.add(new Entry(graphMinSec - extra, (float) (a + b * graphMinSec)));
-        graphEntries.add(new Entry(graphMaxSec + extra, (float) (a + b * graphMaxSec)));
+        graphEntries.add(new Entry(graphEstimation.minTimeSeconds - extra, (float) (a + b * graphEstimation.minTimeSeconds)));
+        graphEntries.add(new Entry(graphEstimation.maxTimeSeconds + extra, (float) (a + b * graphEstimation.maxTimeSeconds)));
 
         return graphEntries;
     }
