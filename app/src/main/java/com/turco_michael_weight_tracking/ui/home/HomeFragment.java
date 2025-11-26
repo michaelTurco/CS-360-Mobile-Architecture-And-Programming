@@ -31,11 +31,11 @@ public class HomeFragment extends Fragment {
         View root = binding.getRoot();
 
         storage = new LocalStorage(requireContext());
-        graphEstimation = new GraphEstimation(storage, requireContext());
+//        graphEstimation = new GraphEstimation(storage, requireContext());
 
         setupButtonEvents();
         setWelcomeText();
-        updateDisplayValues();
+//        updateDisplayValues();
         attemptNotificationRequest();
 
         return root;
