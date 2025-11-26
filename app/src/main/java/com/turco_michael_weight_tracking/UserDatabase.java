@@ -121,6 +121,19 @@ public class UserDatabase {
         setWeightEntries(newEntries, callback);
     }
 
+    public void deleteWeightEntry(WeightEntry entry, Consumer<Boolean> callback) {
+        // if not initialized, can't write data
+        if (!initialized) {
+            callback.accept(false);
+            return;
+        }
+
+        List<WeightEntry> newEntries = new ArrayList<>(userData.weightEntries);
+        newEntries.remove(entry);
+
+        setWeightEntries(newEntries, callback);
+    }
+
     public String getUsername() {
         if (auth.getCurrentUser() == null) return null;
 

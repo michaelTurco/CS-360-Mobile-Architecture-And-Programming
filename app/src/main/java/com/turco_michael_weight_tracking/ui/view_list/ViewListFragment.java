@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -69,11 +71,35 @@ public class ViewListFragment extends Fragment implements ViewListAdapter.OnDele
 
     @Override
     public void onDeleteClick(WeightEntry entry) {
-        // FIREBASE TODO
-//        if (db.deleteWeightEntry(entry)) {
-//            // Refresh the list after deletion
-//            loadSQLEntries();
-//        }
+        setLoading(true);
+
+        db.deleteWeightEntry(entry, this::deleteWeightEntryCallback);
+    }
+
+    private void deleteWeightEntryCallback(boolean result) {
+        setLoading(false);
+
+        // if data written to firebase successfully
+        if (result) {
+            // Refresh the list after deletion
+            loadSQLEntries();
+            return;
+        }
+
+        // error, unable to save data
+        showMessage(R.string.delete_error);
+    }
+
+    public void showMessage(@StringRes int message) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    public void setLoading(boolean loading) {
+        if (loading) {
+            binding.loading.setVisibility(View.VISIBLE);
+        } else {
+            binding.loading.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override

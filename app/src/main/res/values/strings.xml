@@ -31,6 +31,7 @@
     <string name="view_list_title_date">Date</string>
     <string name="view_list_title_weight">Weight</string>
     <string name="delete">Delete</string>
+    <string name="delete_error">Unable to delete entry, try again.</string>
 
     <string name="title_new_weight">New Weight</string>
     <string name="enter_new_weight">Enter a New Weight</string>
