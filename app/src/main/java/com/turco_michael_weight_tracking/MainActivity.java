@@ -2,6 +2,7 @@ package com.turco_michael_weight_tracking;
 
 import android.os.Bundle;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.IdRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -26,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        EdgeToEdge.enable(this);
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         navView = findViewById(R.id.nav_view);
