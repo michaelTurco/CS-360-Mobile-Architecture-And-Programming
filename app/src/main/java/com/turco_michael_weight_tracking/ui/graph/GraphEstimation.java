@@ -49,7 +49,7 @@ public class GraphEstimation {
 
         goalWeight = storage.getGoalWeight();
         if (goalWeight != LocalStorage.UNKNOWN) {
-            UnitConverter.unitToUnit(goalWeight, MeasurementUnit.POUNDS, unit);
+            goalWeight = UnitConverter.unitToUnit(goalWeight, MeasurementUnit.POUNDS, unit);
         }
     }
 
