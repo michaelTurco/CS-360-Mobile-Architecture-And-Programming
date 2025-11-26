@@ -87,10 +87,10 @@ public class LocalStorage {
 
     // Account Nickname
     public void setAccountNickname(String nickname) {
-        preferences.edit().putString(KEY_MEASUREMENT_UNIT + UserDatabase.currentUsername, nickname).apply();
+        preferences.edit().putString(KEY_ACCOUNT_NICKNAME + UserDatabase.currentUsername, nickname).apply();
     }
 
     public String getAccountNickname() {
-        return preferences.getString(KEY_MEASUREMENT_UNIT + UserDatabase.currentUsername, null);
+        return preferences.getString(KEY_ACCOUNT_NICKNAME + UserDatabase.currentUsername, null);
     }
 }
