@@ -6,7 +6,11 @@ import android.util.Log;
 
 import androidx.fragment.app.FragmentActivity;
 
+import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.turco_michael_weight_tracking.R;
 
 public class LoginAuthentication {
@@ -37,7 +41,7 @@ public class LoginAuthentication {
             } else {
                 // If sign in fails, display a message to the user.
                 Log.w(TAG, "signInWithEmail:failure", task.getException());
-                authUI.showMessage(R.string.sign_in_failed);
+                authUI.showMessage(getExceptionMessage(task.getException()));
             }
         });
 
@@ -57,10 +61,28 @@ public class LoginAuthentication {
             } else {
                 // If sign in fails, display a message to the user.
                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                authUI.showMessage(R.string.register_failed);
+                authUI.showMessage(getExceptionMessage(task.getException()));
             }
         });
 
         // got help from https://firebase.google.com/docs/auth/android/start
+    }
+
+    private int getExceptionMessage(Exception e) {
+        if (e instanceof FirebaseAuthInvalidCredentialsException) {
+            return R.string.auth_error_invalid_credentials;
+        }
+
+        if (e instanceof FirebaseAuthUserCollisionException) {
+            return R.string.auth_error_email_in_use;
+        }
+
+        if (e instanceof FirebaseNetworkException) {
+            return R.string.auth_error_network;
+        }
+
+        return R.string.auth_error_unknown;
+
+        // got exception ideas from https://firebase.google.com/docs/reference/android/com/google/firebase/FirebaseException
     }
 }

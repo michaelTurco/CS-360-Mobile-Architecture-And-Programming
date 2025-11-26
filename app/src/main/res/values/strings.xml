@@ -9,12 +9,14 @@
     <string name="action_register_short">Register</string>
     <string name="username_too_short">Username must be at least 5 characters long</string>
     <string name="password_too_short">Password must be at least 5 characters long</string>
-    <string name="incorrect_password">Password is incorrect</string>
     <string name="username_taken">Username is taken</string>
     <string name="username_missing">Username not found</string>
-    <string name="sign_in_failed">Sign in failed</string>
-    <string name="register_failed">Registration failed</string>
     <string name="remember_me">Remember Me</string>
+
+    <string name="auth_error_invalid_credentials">Invalid username or password.</string>
+    <string name="auth_error_email_in_use">That username is already taken.</string>
+    <string name="auth_error_network">Network error. Check your connection.</string>
+    <string name="auth_error_unknown">Unknown error. Please try again.</string>
 
     <string name="title_home">Home</string>
     <string name="welcome">Welcome, </string>
