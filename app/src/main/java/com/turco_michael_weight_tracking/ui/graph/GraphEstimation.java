@@ -141,7 +141,7 @@ public class GraphEstimation {
         // y = a + b * x
         // goalWeight = intercept + slope * time;
         // solve for the estimated goal time
-        double timeGoal = (getGoalWeight() - a) / b;
+        double timeGoal = (goalWeight - a) / b;
         estimatedGoalDays = (float) ((timeGoal - maxTimeSeconds) / 86400f);
 
         // if the estimate says over 3 days ago, assume it is unknown instead
@@ -152,8 +152,8 @@ public class GraphEstimation {
         float difference = (maxTimeSeconds - minTimeSeconds) + 7200;
         float extra = difference * 0.2f;
 
-        graphEstimationPoints.add(new Entry(minTimeSeconds - extra, (float) (a + b * minTimeSeconds)));
-        graphEstimationPoints.add(new Entry(maxTimeSeconds + extra, (float) (a + b * maxTimeSeconds)));
+        graphEstimationPoints.add(new Entry(minTimeSeconds - extra, (float) (a + b * (minTimeSeconds - extra))));
+        graphEstimationPoints.add(new Entry(maxTimeSeconds + extra, (float) (a + b * (maxTimeSeconds + extra))));
     }
 
     public List<Entry> getGraphWeightPoints() {
