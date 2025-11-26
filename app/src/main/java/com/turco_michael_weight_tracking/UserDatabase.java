@@ -67,6 +67,14 @@ public class UserDatabase {
         initialized = true;
     }
 
+    public void signOut() {
+        auth.signOut();
+
+        userData = null;
+        initialized = false;
+        instance = null;
+    }
+
     public List<WeightEntry> getWeightEntries() {
         return userData.weightEntries;
     }

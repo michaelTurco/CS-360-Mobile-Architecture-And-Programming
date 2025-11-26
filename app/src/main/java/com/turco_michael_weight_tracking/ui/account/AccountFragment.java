@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.turco_michael_weight_tracking.LocalStorage;
 import com.turco_michael_weight_tracking.NavigationUtils;
 import com.turco_michael_weight_tracking.R;
@@ -126,8 +125,7 @@ public class AccountFragment extends Fragment {
         storage.setAutoLogin(null, null);
 
         // 'sign out' of current account
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        auth.signOut();
+        db.signOut();
 
         // switch to login activity
         Intent intent = new Intent(requireActivity(), LoginActivity.class);
