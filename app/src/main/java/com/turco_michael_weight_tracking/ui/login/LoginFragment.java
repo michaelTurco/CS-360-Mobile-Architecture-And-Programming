@@ -1,12 +1,9 @@
 package com.turco_michael_weight_tracking.ui.login;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,19 +15,18 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.turco_michael_weight_tracking.LocalStorage;
 import com.turco_michael_weight_tracking.MainActivity;
 import com.turco_michael_weight_tracking.R;
 import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.databinding.FragmentLoginBinding;
 
-public class LoginFragment extends Fragment {
+public class LoginFragment extends Fragment implements IAuthenticationUI {
 
     private FragmentLoginBinding binding;
     private UserDatabase db;
     private LocalStorage storage;
-    private FirebaseAuth mAuth;
+    private LoginAuthentication loginAuth;
 
     private boolean hasValidUsername;
     private boolean hasValidPassword;
@@ -49,15 +45,11 @@ public class LoginFragment extends Fragment {
 
         db = new UserDatabase(requireContext());
         storage = new LocalStorage(requireContext());
+        loginAuth = new LoginAuthentication(requireActivity(), this);
 
-        initializeFirebaseAuth();
         setupTextWatcher();
         setupButtonEvents();
         loadAutoLoginInfo();
-    }
-
-    private void initializeFirebaseAuth() {
-        mAuth = FirebaseAuth.getInstance();
     }
 
     private void setupTextWatcher() {
@@ -160,7 +152,7 @@ public class LoginFragment extends Fragment {
 
         String username = binding.username.getText().toString();
         String password = binding.password.getText().toString();
-        signIn(username, password);
+        loginAuth.signIn(username, password);
     }
 
     private void clickRegisterButton() {
@@ -168,7 +160,7 @@ public class LoginFragment extends Fragment {
 
         String username = binding.username.getText().toString();
         String password = binding.password.getText().toString();
-        register(username, password);
+        loginAuth.register(username, password);
     }
 
     private void loadAutoLoginInfo() {
@@ -195,47 +187,7 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private void signIn(String username, String password) {
-        String email = username + "@local.app";
-
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(requireActivity(), task -> {
-            setLoading(false);
-
-            if (task.isSuccessful()) {
-                // Sign in success!
-                Log.d(TAG, "signInWithEmail:success");
-                onSuccessfulSignIn();
-            } else {
-                // If sign in fails, display a message to the user.
-                Log.w(TAG, "signInWithEmail:failure", task.getException());
-                showToast(R.string.sign_in_failed);
-            }
-        });
-
-        // got help from https://firebase.google.com/docs/auth/android/start
-    }
-
-    private void register(String username, String password) {
-        String email = username + "@local.app";
-
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(requireActivity(), task -> {
-            setLoading(false);
-
-            if (task.isSuccessful()) {
-                // Sign in success!
-                Log.d(TAG, "createUserWithEmail:success");
-                onSuccessfulSignIn();
-            } else {
-                // If sign in fails, display a message to the user.
-                Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                showToast(R.string.register_failed);
-            }
-        });
-
-        // got help from https://firebase.google.com/docs/auth/android/start
-    }
-
-    private void onSuccessfulSignIn() {
+    public void onSuccessfulSignIn() {
         saveAutoLoginInfo();
 
         // switch to main activity
@@ -244,11 +196,11 @@ public class LoginFragment extends Fragment {
         requireActivity().finish();
     }
 
-    private void showToast(@StringRes int message) {
+    public void showMessage(@StringRes int message) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
     }
 
-    private void setLoading(boolean loading) {
+    public void setLoading(boolean loading) {
         if (loading) {
             binding.loading.setVisibility(View.VISIBLE);
         } else {
