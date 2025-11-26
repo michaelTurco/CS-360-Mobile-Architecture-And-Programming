@@ -59,9 +59,16 @@ public class HomeFragment extends Fragment {
     }
 
     private void setWelcomeText() {
+        String nickname = storage.getAccountNickname();
+
         if (UserDatabase.currentUsername != null) {
-            String welcomeMessage = getString(R.string.welcome_message, UserDatabase.currentUsername);
-            binding.welcome.setText(welcomeMessage);
+            // set nickname to account username if it isn't set yet
+            if (nickname == null) {
+                nickname = UserDatabase.currentUsername;
+                storage.setAccountNickname(nickname);
+            }
+
+            binding.welcome.setText(getString(R.string.welcome_message, nickname));
         }
     }
 
