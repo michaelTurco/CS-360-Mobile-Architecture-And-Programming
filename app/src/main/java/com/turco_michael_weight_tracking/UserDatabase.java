@@ -68,6 +68,11 @@ public class UserDatabase {
         return userData.weightEntries;
     }
 
+    public float getMostRecentWeight() {
+        if (userData.weightEntries.isEmpty()) return LocalStorage.UNKNOWN;
+        return userData.weightEntries.get(userData.weightEntries.size() - 1).getWeight();
+    }
+
     public void setWeightEntries(List<WeightEntry> newEntries, Consumer<Boolean> callback) {
         // if not initialized, can't write data
         if (!initialized) {

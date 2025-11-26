@@ -7,7 +7,7 @@ import com.turco_michael_weight_tracking.LocalStorage;
 import com.turco_michael_weight_tracking.LocalStorage.MeasurementUnit;
 import com.turco_michael_weight_tracking.R;
 import com.turco_michael_weight_tracking.UnitConverter;
-import com.turco_michael_weight_tracking.UserDatabase_OLD;
+import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.ui.view_list.WeightEntry;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class GraphEstimation {
 
     private final LocalStorage storage;
     private final MeasurementUnit unit;
-    private final UserDatabase_OLD db;
+    private final UserDatabase db;
     private final Context context;
 
     private List<WeightEntry> weightEntries;
@@ -35,7 +35,7 @@ public class GraphEstimation {
     public GraphEstimation(LocalStorage storage, Context context) {
         this.storage = storage;
         this.unit = storage.getMeasurementUnit();
-        this.db = new UserDatabase_OLD(context);
+        this.db = UserDatabase.getInstance();
         this.context = context;
 
         loadDatabaseValues();
@@ -45,7 +45,7 @@ public class GraphEstimation {
     }
 
     private void loadDatabaseValues() {
-        weightEntries = db.getWeightEntries(UserDatabase_OLD.currentUserID);
+        weightEntries = db.getWeightEntries();
 
         goalWeight = storage.getGoalWeight();
         if (goalWeight != LocalStorage.UNKNOWN) {

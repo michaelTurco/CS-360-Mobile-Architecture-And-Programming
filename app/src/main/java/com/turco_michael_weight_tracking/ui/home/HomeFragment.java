@@ -14,6 +14,7 @@ import com.turco_michael_weight_tracking.LocalStorage.MeasurementUnit;
 import com.turco_michael_weight_tracking.NavigationUtils;
 import com.turco_michael_weight_tracking.R;
 import com.turco_michael_weight_tracking.UnitConverter;
+import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.UserDatabase_OLD;
 import com.turco_michael_weight_tracking.databinding.FragmentHomeBinding;
 import com.turco_michael_weight_tracking.ui.graph.GraphEstimation;
@@ -31,11 +32,11 @@ public class HomeFragment extends Fragment {
         View root = binding.getRoot();
 
         storage = new LocalStorage(requireContext());
-//        graphEstimation = new GraphEstimation(storage, requireContext());
+        graphEstimation = new GraphEstimation(storage, requireContext());
 
         setupButtonEvents();
         setWelcomeText();
-//        updateDisplayValues();
+        updateDisplayValues();
         attemptNotificationRequest();
 
         return root;
@@ -73,11 +74,11 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateDisplayValues() {
-        UserDatabase_OLD db = new UserDatabase_OLD(getContext());
+        UserDatabase db = UserDatabase.getInstance();
         MeasurementUnit unit = storage.getMeasurementUnit();
 
         // update 'most recent weight'
-        float weight = db.getMostRecentWeight(UserDatabase_OLD.currentUserID);
+        float weight = db.getMostRecentWeight();
         if (weight == LocalStorage.UNKNOWN) {
             binding.mostRecentWeight.setText(R.string.no_records);
         } else {
