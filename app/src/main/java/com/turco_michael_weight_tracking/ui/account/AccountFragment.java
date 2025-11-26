@@ -1,5 +1,6 @@
 package com.turco_michael_weight_tracking.ui.account;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,11 +17,13 @@ import com.turco_michael_weight_tracking.NavigationUtils;
 import com.turco_michael_weight_tracking.R;
 import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.databinding.FragmentAccountBinding;
+import com.turco_michael_weight_tracking.ui.login.LoginActivity;
 
 public class AccountFragment extends Fragment {
 
     private FragmentAccountBinding binding;
     private LocalStorage storage;
+    private UserDatabase db;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -29,6 +32,7 @@ public class AccountFragment extends Fragment {
         View root = binding.getRoot();
 
         storage = new LocalStorage(requireContext());
+        db = new UserDatabase(requireContext());
 
         setupButtonEvents();
         updateDisplayValues();
@@ -43,6 +47,7 @@ public class AccountFragment extends Fragment {
         binding.editNicknameApply.setOnClickListener(v -> clickNicknameApplyButton());
 
         // clicking the 'sign out' button
+        binding.signOutButton.setOnClickListener(v -> clickSignOutButton());
     }
 
     private void updateDisplayValues() {
@@ -113,6 +118,19 @@ public class AccountFragment extends Fragment {
 
         // send the user to the home page
         NavigationUtils.navigateTo(this, R.id.navigation_home);
+    }
+
+    private void clickSignOutButton() {
+        // clear any auto-login information
+        storage.setAutoLogin(null, null);
+
+        // 'sign out' of current account
+        db.setCurrentUser(null, 0);
+
+        // switch to login activity
+        Intent intent = new Intent(requireActivity(), LoginActivity.class);
+        startActivity(intent);
+        requireActivity().finish();
     }
 
     @Override
