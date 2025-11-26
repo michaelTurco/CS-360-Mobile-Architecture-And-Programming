@@ -211,6 +211,8 @@ public class LoginFragment extends Fragment {
                 showToast(R.string.sign_in_failed);
             }
         });
+
+        // got help from https://firebase.google.com/docs/auth/android/start
     }
 
     private void register(String username, String password) {
@@ -229,6 +231,8 @@ public class LoginFragment extends Fragment {
                 showToast(R.string.register_failed);
             }
         });
+
+        // got help from https://firebase.google.com/docs/auth/android/start
     }
 
     private void onSuccessfulSignIn() {
