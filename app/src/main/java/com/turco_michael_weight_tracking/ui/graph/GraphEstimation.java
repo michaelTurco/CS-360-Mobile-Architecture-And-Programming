@@ -31,6 +31,7 @@ public class GraphEstimation {
 
     private float minTimeSeconds;
     private float maxTimeSeconds;
+    private long referenceTimeMillis;
 
     public GraphEstimation(LocalStorage storage, Context context) {
         this.storage = storage;
@@ -56,26 +57,38 @@ public class GraphEstimation {
     private void loadGraphWeightPoints() {
         graphWeightPoints = new ArrayList<>();
 
-        minTimeSeconds = Float.MAX_VALUE;
-        maxTimeSeconds = 0;
+        long minTimeMillis = Long.MAX_VALUE;
 
+        // determine the minimum epoch time
         for (WeightEntry entry : weightEntries) {
-            float timeSec = entry.getDate().getTime() / 1000f;
+            long timeMillis = entry.getDate().getTime();
 
-            // store min and max of graph timestamp data
-            if (minTimeSeconds > timeSec) minTimeSeconds = timeSec;
-            if (maxTimeSeconds < timeSec) maxTimeSeconds = timeSec;
-
-            float weight = UnitConverter.unitToUnit(entry.getWeight(), MeasurementUnit.POUNDS, unit);
-
-            graphWeightPoints.add(new Entry(timeSec, weight));
+            if (minTimeMillis > timeMillis) minTimeMillis = timeMillis;
         }
 
         // if too few entries, set the min and max within 4 hours of right now
         if (weightEntries.size() < 2) {
-            float timeSec = System.currentTimeMillis() / 1000f;
-            minTimeSeconds = timeSec - 7200;
-            maxTimeSeconds = timeSec + 7200;
+            long now = System.currentTimeMillis();
+            minTimeMillis = now - 7200_000; // 2 hours in ms
+        }
+
+        // store reference time
+        referenceTimeMillis = minTimeMillis;
+
+        minTimeSeconds = Float.MAX_VALUE;
+        maxTimeSeconds = 0;
+
+        // add graph points and normalized timestamp values
+        for (WeightEntry entry : weightEntries) {
+            long timeMillis = entry.getDate().getTime();
+
+            float normalizedX = (timeMillis - referenceTimeMillis) / 1000f;
+            float weight = UnitConverter.unitToUnit(entry.getWeight(), MeasurementUnit.POUNDS, unit);
+
+            graphWeightPoints.add(new Entry(normalizedX, weight));
+
+            if (normalizedX < minTimeSeconds) minTimeSeconds = normalizedX;
+            if (normalizedX > maxTimeSeconds) maxTimeSeconds = normalizedX;
         }
 
         // sort the list by x value
@@ -144,9 +157,8 @@ public class GraphEstimation {
         double timeGoal = (goalWeight - a) / b;
         estimatedGoalDays = (float) ((timeGoal - maxTimeSeconds) / 86400f);
 
-        // if the estimate says over 3 days ago, assume it is unknown instead
-        if (estimatedGoalDays < -3) estimatedGoalDays = UNKNOWN_TIME;
-        else if (estimatedGoalDays < 0) estimatedGoalDays = 0;
+        // if the estimate is negative, assume it is unknown instead
+        if (estimatedGoalDays < 0F) estimatedGoalDays = UNKNOWN_TIME;
 
         // add extra space to the left and right
         float difference = (maxTimeSeconds - minTimeSeconds) + 7200;
@@ -170,6 +182,10 @@ public class GraphEstimation {
 
     public float getGoalWeight() {
         return goalWeight;
+    }
+
+    public long getReferenceTimeMillis() {
+        return referenceTimeMillis;
     }
 
     public String getFormattedEstimatedTime() {

@@ -218,7 +218,8 @@ public class GraphFragment extends Fragment {
     }
 
     private String formatDayValue(float value) {
-        long timeMS = (long) value * 1000L;
+        // get the original non-normalized epoch time
+        long timeMS = graphEstimation.getReferenceTimeMillis() + (long) (value * 1000L);
         float rangeSec = binding.graph.getVisibleXRange();
 
         if (rangeSec > 76800) {
