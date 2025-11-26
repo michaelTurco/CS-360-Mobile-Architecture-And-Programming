@@ -1,9 +1,5 @@
 package com.turco_michael_weight_tracking.ui.login;
 
-import static android.content.ContentValues.TAG;
-
-import android.util.Log;
-
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.firebase.FirebaseNetworkException;
@@ -11,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.turco_michael_weight_tracking.R;
+import com.turco_michael_weight_tracking.UserDatabase;
 
 public class LoginAuthentication {
     private static final String ACCOUNT_EMAIL_ENDING = "@local.app";
@@ -35,7 +32,7 @@ public class LoginAuthentication {
 
             if (task.isSuccessful()) {
                 // Sign in success!
-                authUI.onSuccessfulSignIn();
+                onAuthenticationSuccess();
             } else {
                 // If sign in fails, display a message to the user.
                 authUI.showMessage(getExceptionMessage(task.getException()));
@@ -53,7 +50,7 @@ public class LoginAuthentication {
 
             if (task.isSuccessful()) {
                 // Sign in success!
-                authUI.onSuccessfulSignIn();
+                onAuthenticationSuccess();
             } else {
                 // If sign in fails, display a message to the user.
                 authUI.showMessage(getExceptionMessage(task.getException()));
@@ -79,5 +76,22 @@ public class LoginAuthentication {
         return R.string.auth_error_unknown;
 
         // got exception ideas from https://firebase.google.com/docs/reference/android/com/google/firebase/FirebaseException
+    }
+
+    private void onAuthenticationSuccess() {
+        // initialize the user's database values before sign in is complete
+        UserDatabase db = UserDatabase.getInstance();
+        db.initialize(this::onInitializeResult);
+    }
+
+    private void onInitializeResult(boolean result) {
+        // on successful initialization
+        if (result) {
+            authUI.onSuccessfulSignIn();
+            return;
+        }
+
+        // unable to initialize database values
+        authUI.showMessage(R.string.auth_error_bad_read);
     }
 }
