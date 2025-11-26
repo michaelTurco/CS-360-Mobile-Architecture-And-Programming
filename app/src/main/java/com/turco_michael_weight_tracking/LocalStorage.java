@@ -14,6 +14,7 @@ public class LocalStorage {
     private static final String KEY_AUTOLOGIN_USERNAME = "autologin_username";
     private static final String KEY_AUTOLOGIN_PASSWORD = "autologin_password";
     private static final String KEY_MEASUREMENT_UNIT = "measurement_unit_";
+    private static final String KEY_ACCOUNT_NICKNAME = "account_nickname_";
 
     // Constant for unknown values
     public static final int UNKNOWN = -1;
@@ -81,5 +82,15 @@ public class LocalStorage {
 
     public MeasurementUnit getMeasurementUnit() {
         return MeasurementUnit.values()[preferences.getInt(KEY_MEASUREMENT_UNIT + UserDatabase.currentUsername, MeasurementUnit.POUNDS.ordinal())];
+    }
+
+
+    // Account Nickname
+    public void setAccountNickname(String nickname) {
+        preferences.edit().putString(KEY_MEASUREMENT_UNIT + UserDatabase.currentUsername, nickname).apply();
+    }
+
+    public String getAccountNickname() {
+        return preferences.getString(KEY_MEASUREMENT_UNIT + UserDatabase.currentUsername, null);
     }
 }
