@@ -18,13 +18,11 @@ import androidx.fragment.app.Fragment;
 import com.turco_michael_weight_tracking.LocalStorage;
 import com.turco_michael_weight_tracking.MainActivity;
 import com.turco_michael_weight_tracking.R;
-import com.turco_michael_weight_tracking.UserDatabase_OLD;
 import com.turco_michael_weight_tracking.databinding.FragmentLoginBinding;
 
 public class LoginFragment extends Fragment implements IAuthenticationUI {
 
     private FragmentLoginBinding binding;
-    private UserDatabase_OLD db;
     private LocalStorage storage;
     private LoginAuthentication loginAuth;
 
@@ -43,7 +41,6 @@ public class LoginFragment extends Fragment implements IAuthenticationUI {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        db = new UserDatabase_OLD(requireContext());
         storage = new LocalStorage(requireContext());
         loginAuth = new LoginAuthentication(requireActivity(), this);
 
@@ -210,7 +207,6 @@ public class LoginFragment extends Fragment implements IAuthenticationUI {
 
     @Override
     public void onDestroyView() {
-        db.close();
         binding = null;
         super.onDestroyView();
     }

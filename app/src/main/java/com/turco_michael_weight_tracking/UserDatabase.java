@@ -101,4 +101,16 @@ public class UserDatabase {
                     callback.accept(false);
                 });
     }
+
+    public String getUsername() {
+        if (auth.getCurrentUser() == null) return null;
+
+        String email = auth.getCurrentUser().getEmail();
+        if (email == null) return null;
+
+        int index = email.indexOf('@');
+        if (index <= 0) return null;
+
+        return email.substring(0, index);
+    }
 }

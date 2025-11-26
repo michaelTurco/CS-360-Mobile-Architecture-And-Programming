@@ -13,7 +13,7 @@ import com.turco_michael_weight_tracking.LocalStorage;
 import com.turco_michael_weight_tracking.LocalStorage.MeasurementUnit;
 import com.turco_michael_weight_tracking.NavigationUtils;
 import com.turco_michael_weight_tracking.R;
-import com.turco_michael_weight_tracking.UserDatabase_OLD;
+import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.databinding.FragmentViewListBinding;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class ViewListFragment extends Fragment implements ViewListAdapter.OnDele
     private FragmentViewListBinding binding;
     private ViewListAdapter adapter;
     private LocalStorage storage;
-    private UserDatabase_OLD db;
+    private UserDatabase db;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class ViewListFragment extends Fragment implements ViewListAdapter.OnDele
         View root = binding.getRoot();
 
         storage = new LocalStorage(requireContext());
-        db = new UserDatabase_OLD(getContext());
+        db = UserDatabase.getInstance();
 
         setupButtonEvents();
         setupRecyclerView();
@@ -62,17 +62,18 @@ public class ViewListFragment extends Fragment implements ViewListAdapter.OnDele
         // got help from:
         // https://stackoverflow.com/questions/31367599/how-to-update-recyclerview-adapter-data
 
-        List<WeightEntry> entries = db.getWeightEntries(UserDatabase_OLD.currentUserID);
+        List<WeightEntry> entries = db.getWeightEntries();
         adapter.updateData(entries);
         adapter.notifyDataSetChanged(); // refreshes the recycler view
     }
 
     @Override
     public void onDeleteClick(long entryId) {
-        if (db.deleteWeightEntry(UserDatabase_OLD.currentUserID, entryId)) {
-            // Refresh the list after deletion
-            loadSQLEntries();
-        }
+        // FIREBASE TODO
+//        if (db.deleteWeightEntry(UserDatabase_OLD.currentUserID, entryId)) {
+//            // Refresh the list after deletion
+//            loadSQLEntries();
+//        }
     }
 
     @Override

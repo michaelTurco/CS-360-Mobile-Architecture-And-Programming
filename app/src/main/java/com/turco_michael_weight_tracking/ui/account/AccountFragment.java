@@ -12,10 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.turco_michael_weight_tracking.LocalStorage;
 import com.turco_michael_weight_tracking.NavigationUtils;
 import com.turco_michael_weight_tracking.R;
-import com.turco_michael_weight_tracking.UserDatabase_OLD;
+import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.databinding.FragmentAccountBinding;
 import com.turco_michael_weight_tracking.ui.login.LoginActivity;
 
@@ -23,7 +24,7 @@ public class AccountFragment extends Fragment {
 
     private FragmentAccountBinding binding;
     private LocalStorage storage;
-    private UserDatabase_OLD db;
+    private UserDatabase db;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -32,7 +33,7 @@ public class AccountFragment extends Fragment {
         View root = binding.getRoot();
 
         storage = new LocalStorage(requireContext());
-        db = new UserDatabase_OLD(requireContext());
+        db = UserDatabase.getInstance();
 
         setupButtonEvents();
         updateDisplayValues();
@@ -54,10 +55,10 @@ public class AccountFragment extends Fragment {
         // update 'account nickname'
         String nickname = storage.getAccountNickname();
 
-        if (UserDatabase_OLD.currentUsername != null) {
+        if (db.getUsername() != null) {
             // set nickname to account username if it isn't set yet
             if (nickname == null) {
-                nickname = UserDatabase_OLD.currentUsername;
+                nickname = db.getUsername();
                 storage.setAccountNickname(nickname);
             }
 
@@ -125,7 +126,8 @@ public class AccountFragment extends Fragment {
         storage.setAutoLogin(null, null);
 
         // 'sign out' of current account
-        db.setCurrentUser(null, 0);
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        auth.signOut();
 
         // switch to login activity
         Intent intent = new Intent(requireActivity(), LoginActivity.class);

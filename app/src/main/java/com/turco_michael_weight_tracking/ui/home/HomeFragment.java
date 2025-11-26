@@ -15,7 +15,6 @@ import com.turco_michael_weight_tracking.NavigationUtils;
 import com.turco_michael_weight_tracking.R;
 import com.turco_michael_weight_tracking.UnitConverter;
 import com.turco_michael_weight_tracking.UserDatabase;
-import com.turco_michael_weight_tracking.UserDatabase_OLD;
 import com.turco_michael_weight_tracking.databinding.FragmentHomeBinding;
 import com.turco_michael_weight_tracking.ui.graph.GraphEstimation;
 
@@ -24,6 +23,7 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private LocalStorage storage;
     private GraphEstimation graphEstimation;
+    private UserDatabase db;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -33,6 +33,7 @@ public class HomeFragment extends Fragment {
 
         storage = new LocalStorage(requireContext());
         graphEstimation = new GraphEstimation(storage, requireContext());
+        db = UserDatabase.getInstance();
 
         setupButtonEvents();
         setWelcomeText();
@@ -62,10 +63,10 @@ public class HomeFragment extends Fragment {
     private void setWelcomeText() {
         String nickname = storage.getAccountNickname();
 
-        if (UserDatabase_OLD.currentUsername != null) {
+        if (db.getUsername() != null) {
             // set nickname to account username if it isn't set yet
             if (nickname == null) {
-                nickname = UserDatabase_OLD.currentUsername;
+                nickname = db.getUsername();
                 storage.setAccountNickname(nickname);
             }
 
@@ -74,7 +75,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateDisplayValues() {
-        UserDatabase db = UserDatabase.getInstance();
         MeasurementUnit unit = storage.getMeasurementUnit();
 
         // update 'most recent weight'
