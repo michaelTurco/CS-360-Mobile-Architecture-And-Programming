@@ -19,6 +19,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:autofillHints="@string/prompt_username"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         android:hint="@string/prompt_username"
         android:inputType="textNoSuggestions"
         android:selectAllOnFocus="true"
