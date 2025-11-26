@@ -35,11 +35,9 @@ public class LoginAuthentication {
 
             if (task.isSuccessful()) {
                 // Sign in success!
-                Log.d(TAG, "signInWithEmail:success");
                 authUI.onSuccessfulSignIn();
             } else {
                 // If sign in fails, display a message to the user.
-                Log.w(TAG, "signInWithEmail:failure", task.getException());
                 authUI.showMessage(getExceptionMessage(task.getException()));
             }
         });
@@ -55,11 +53,9 @@ public class LoginAuthentication {
 
             if (task.isSuccessful()) {
                 // Sign in success!
-                Log.d(TAG, "createUserWithEmail:success");
                 authUI.onSuccessfulSignIn();
             } else {
                 // If sign in fails, display a message to the user.
-                Log.w(TAG, "createUserWithEmail:failure", task.getException());
                 authUI.showMessage(getExceptionMessage(task.getException()));
             }
         });
