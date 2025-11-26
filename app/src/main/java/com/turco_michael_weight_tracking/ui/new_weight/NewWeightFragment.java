@@ -8,8 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 
 import com.turco_michael_weight_tracking.LocalStorage;
@@ -89,21 +91,32 @@ public class NewWeightFragment extends Fragment {
     private void clickSubmitButton() {
         if (hasValidWeightText(binding.newWeightField)) {
             // add database entry
-            // FIREBASE TODO
+            setLoading(true);
             WeightEntry entry = new WeightEntry(new Date(), getWeightFloat(binding.newWeightField));
-//            db.addWeightEntry(entry);
+            db.addWeightEntry(entry, this::addWeightEntryCallback);
+        }
+    }
 
+    private void addWeightEntryCallback(boolean result) {
+        setLoading(false);
+
+        // if data written to firebase successfully
+        if (result) {
             // check if the new weight meets the goal weight, then send a notification (if allowed)
             boolean reachedGoal = checkGoalWeight(getWeightFloat(binding.newWeightField));
 
-            // clear text
+            // reset the text
             binding.newWeightField.setText("");
 
             // send the user to the weight history
             if (!reachedGoal) {
                 NavigationUtils.navigateTo(this, R.id.navigation_view_list);
             }
+            return;
         }
+
+        // error, unable to save data
+        showMessage(R.string.new_weight_error);
     }
 
     private void updateSubmitButtonEnabled() {
@@ -147,6 +160,18 @@ public class NewWeightFragment extends Fragment {
                 .setMessage("Your goal weight has been reached!")
                 .setPositiveButton("OK", (dialog, which) -> NavigationUtils.navigateTo(this, R.id.navigation_home))
                 .show();
+    }
+
+    public void showMessage(@StringRes int message) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    public void setLoading(boolean loading) {
+        if (loading) {
+            binding.loading.setVisibility(View.VISIBLE);
+        } else {
+            binding.loading.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override

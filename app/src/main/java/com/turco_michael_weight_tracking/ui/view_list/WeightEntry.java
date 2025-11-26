@@ -6,6 +6,11 @@ public class WeightEntry {
     private final Date date;
     private final float weight;
 
+    public WeightEntry() {
+        this.date = new Date();
+        this.weight = 0;
+    }
+
     public WeightEntry(Date date, float weight) {
         this.date = date;
         this.weight = weight;
