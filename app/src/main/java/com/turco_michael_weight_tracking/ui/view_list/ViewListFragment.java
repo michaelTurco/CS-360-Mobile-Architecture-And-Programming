@@ -68,9 +68,9 @@ public class ViewListFragment extends Fragment implements ViewListAdapter.OnDele
     }
 
     @Override
-    public void onDeleteClick(long entryId) {
+    public void onDeleteClick(WeightEntry entry) {
         // FIREBASE TODO
-//        if (db.deleteWeightEntry(UserDatabase_OLD.currentUserID, entryId)) {
+//        if (db.deleteWeightEntry(entry)) {
 //            // Refresh the list after deletion
 //            loadSQLEntries();
 //        }

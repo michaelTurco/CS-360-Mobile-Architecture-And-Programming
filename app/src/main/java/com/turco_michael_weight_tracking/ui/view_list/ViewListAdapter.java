@@ -56,7 +56,7 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListHolder> {
 
         viewHolder.deleteButton.setOnClickListener(v -> {
             if (deleteListener != null) { // fix crash
-                deleteListener.onDeleteClick(entry.getId());
+                deleteListener.onDeleteClick(entry);
             }
         });
     }
@@ -74,6 +74,6 @@ public class ViewListAdapter extends RecyclerView.Adapter<ViewListHolder> {
     // https://stackoverflow.com/questions/49969278/recyclerview-item-click-listener-the-right-way
     // to implement the recycler view's click listener
     public interface OnDeleteClickListener {
-        void onDeleteClick(long entryId);
+        void onDeleteClick(WeightEntry entry);
     }
 }
