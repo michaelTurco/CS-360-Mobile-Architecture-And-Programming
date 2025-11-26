@@ -14,7 +14,7 @@ import com.turco_michael_weight_tracking.LocalStorage.MeasurementUnit;
 import com.turco_michael_weight_tracking.NavigationUtils;
 import com.turco_michael_weight_tracking.R;
 import com.turco_michael_weight_tracking.UnitConverter;
-import com.turco_michael_weight_tracking.UserDatabase;
+import com.turco_michael_weight_tracking.UserDatabase_OLD;
 import com.turco_michael_weight_tracking.databinding.FragmentHomeBinding;
 import com.turco_michael_weight_tracking.ui.graph.GraphEstimation;
 
@@ -61,10 +61,10 @@ public class HomeFragment extends Fragment {
     private void setWelcomeText() {
         String nickname = storage.getAccountNickname();
 
-        if (UserDatabase.currentUsername != null) {
+        if (UserDatabase_OLD.currentUsername != null) {
             // set nickname to account username if it isn't set yet
             if (nickname == null) {
-                nickname = UserDatabase.currentUsername;
+                nickname = UserDatabase_OLD.currentUsername;
                 storage.setAccountNickname(nickname);
             }
 
@@ -73,11 +73,11 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateDisplayValues() {
-        UserDatabase db = new UserDatabase(getContext());
+        UserDatabase_OLD db = new UserDatabase_OLD(getContext());
         MeasurementUnit unit = storage.getMeasurementUnit();
 
         // update 'most recent weight'
-        float weight = db.getMostRecentWeight(UserDatabase.currentUserID);
+        float weight = db.getMostRecentWeight(UserDatabase_OLD.currentUserID);
         if (weight == LocalStorage.UNKNOWN) {
             binding.mostRecentWeight.setText(R.string.no_records);
         } else {

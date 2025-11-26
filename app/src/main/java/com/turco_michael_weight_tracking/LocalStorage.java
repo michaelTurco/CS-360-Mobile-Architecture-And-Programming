@@ -41,21 +41,21 @@ public class LocalStorage {
 
     // Goal Weight
     public void setGoalWeight(float weight) {
-        preferences.edit().putFloat(KEY_GOAL_WEIGHT + UserDatabase.currentUsername, weight).apply();
+        preferences.edit().putFloat(KEY_GOAL_WEIGHT + UserDatabase_OLD.currentUsername, weight).apply();
     }
 
     public float getGoalWeight() {
-        return preferences.getFloat(KEY_GOAL_WEIGHT + UserDatabase.currentUsername, UNKNOWN);
+        return preferences.getFloat(KEY_GOAL_WEIGHT + UserDatabase_OLD.currentUsername, UNKNOWN);
     }
 
 
     // Notification Status
     public void setNotificationStatus(NotificationStatus status) {
-        preferences.edit().putInt(KEY_NOTIFICATIONS + UserDatabase.currentUsername, status.ordinal()).apply();
+        preferences.edit().putInt(KEY_NOTIFICATIONS + UserDatabase_OLD.currentUsername, status.ordinal()).apply();
     }
 
     public NotificationStatus getNotificationStatus() {
-        return NotificationStatus.values()[preferences.getInt(KEY_NOTIFICATIONS + UserDatabase.currentUsername, NotificationStatus.UNKNOWN.ordinal())];
+        return NotificationStatus.values()[preferences.getInt(KEY_NOTIFICATIONS + UserDatabase_OLD.currentUsername, NotificationStatus.UNKNOWN.ordinal())];
         // help on enum casting from https://stackoverflow.com/questions/5878952/cast-int-to-enum-in-java
     }
 
@@ -77,20 +77,20 @@ public class LocalStorage {
 
     // Measurement Unit
     public void setMeasurementUnit(MeasurementUnit unit) {
-        preferences.edit().putInt(KEY_MEASUREMENT_UNIT + UserDatabase.currentUsername, unit.ordinal()).apply();
+        preferences.edit().putInt(KEY_MEASUREMENT_UNIT + UserDatabase_OLD.currentUsername, unit.ordinal()).apply();
     }
 
     public MeasurementUnit getMeasurementUnit() {
-        return MeasurementUnit.values()[preferences.getInt(KEY_MEASUREMENT_UNIT + UserDatabase.currentUsername, MeasurementUnit.POUNDS.ordinal())];
+        return MeasurementUnit.values()[preferences.getInt(KEY_MEASUREMENT_UNIT + UserDatabase_OLD.currentUsername, MeasurementUnit.POUNDS.ordinal())];
     }
 
 
     // Account Nickname
     public void setAccountNickname(String nickname) {
-        preferences.edit().putString(KEY_ACCOUNT_NICKNAME + UserDatabase.currentUsername, nickname).apply();
+        preferences.edit().putString(KEY_ACCOUNT_NICKNAME + UserDatabase_OLD.currentUsername, nickname).apply();
     }
 
     public String getAccountNickname() {
-        return preferences.getString(KEY_ACCOUNT_NICKNAME + UserDatabase.currentUsername, null);
+        return preferences.getString(KEY_ACCOUNT_NICKNAME + UserDatabase_OLD.currentUsername, null);
     }
 }

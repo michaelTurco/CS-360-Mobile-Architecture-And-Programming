@@ -2,7 +2,7 @@ package com.turco_michael_weight_tracking.data;
 
 import android.content.Context;
 
-import com.turco_michael_weight_tracking.UserDatabase;
+import com.turco_michael_weight_tracking.UserDatabase_OLD;
 import com.turco_michael_weight_tracking.data.model.LoggedInUser;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.io.IOException;
 public class LoginDataSource {
 
     public Result<LoggedInUser> login(Context context, String username, String password) {
-        UserDatabase db = new UserDatabase(context);
+        UserDatabase_OLD db = new UserDatabase_OLD(context);
 
         try {
             long userId = db.authenticateUser(username, password);
@@ -34,7 +34,7 @@ public class LoginDataSource {
     }
 
     public Result<LoggedInUser> register(Context context, String username, String password) {
-        UserDatabase db = new UserDatabase(context);
+        UserDatabase_OLD db = new UserDatabase_OLD(context);
 
         try {
             if (db.isUsernameTaken(username)) {

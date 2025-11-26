@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.turco_michael_weight_tracking.LocalStorage;
 import com.turco_michael_weight_tracking.NavigationUtils;
 import com.turco_michael_weight_tracking.R;
-import com.turco_michael_weight_tracking.UserDatabase;
+import com.turco_michael_weight_tracking.UserDatabase_OLD;
 import com.turco_michael_weight_tracking.databinding.FragmentAccountBinding;
 import com.turco_michael_weight_tracking.ui.login.LoginActivity;
 
@@ -23,7 +23,7 @@ public class AccountFragment extends Fragment {
 
     private FragmentAccountBinding binding;
     private LocalStorage storage;
-    private UserDatabase db;
+    private UserDatabase_OLD db;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -32,7 +32,7 @@ public class AccountFragment extends Fragment {
         View root = binding.getRoot();
 
         storage = new LocalStorage(requireContext());
-        db = new UserDatabase(requireContext());
+        db = new UserDatabase_OLD(requireContext());
 
         setupButtonEvents();
         updateDisplayValues();
@@ -54,10 +54,10 @@ public class AccountFragment extends Fragment {
         // update 'account nickname'
         String nickname = storage.getAccountNickname();
 
-        if (UserDatabase.currentUsername != null) {
+        if (UserDatabase_OLD.currentUsername != null) {
             // set nickname to account username if it isn't set yet
             if (nickname == null) {
-                nickname = UserDatabase.currentUsername;
+                nickname = UserDatabase_OLD.currentUsername;
                 storage.setAccountNickname(nickname);
             }
 

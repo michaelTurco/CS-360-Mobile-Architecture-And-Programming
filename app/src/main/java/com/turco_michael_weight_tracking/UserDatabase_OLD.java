@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class UserDatabase extends SQLiteOpenHelper {
+public class UserDatabase_OLD extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "users.db";
     private static final int VERSION = 1;
@@ -23,7 +23,7 @@ public class UserDatabase extends SQLiteOpenHelper {
     public static String currentUsername;
     public static Long currentUserID;
 
-    public UserDatabase(Context context) {
+    public UserDatabase_OLD(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
     }
 

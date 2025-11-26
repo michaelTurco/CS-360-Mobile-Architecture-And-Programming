@@ -17,7 +17,7 @@ import com.turco_michael_weight_tracking.LocalStorage.MeasurementUnit;
 import com.turco_michael_weight_tracking.NavigationUtils;
 import com.turco_michael_weight_tracking.R;
 import com.turco_michael_weight_tracking.UnitConverter;
-import com.turco_michael_weight_tracking.UserDatabase;
+import com.turco_michael_weight_tracking.UserDatabase_OLD;
 import com.turco_michael_weight_tracking.databinding.FragmentNewWeightBinding;
 
 import java.util.Date;
@@ -86,8 +86,8 @@ public class NewWeightFragment extends Fragment {
     private void clickSubmitButton() {
         if (hasValidWeightText(binding.newWeightField)) {
             // add database entry
-            UserDatabase db = new UserDatabase(getContext());
-            db.addWeightEntry(UserDatabase.currentUserID, new Date(), getWeightFloat(binding.newWeightField));
+            UserDatabase_OLD db = new UserDatabase_OLD(getContext());
+            db.addWeightEntry(UserDatabase_OLD.currentUserID, new Date(), getWeightFloat(binding.newWeightField));
 
             // check if the new weight meets the goal weight, then send a notification (if allowed)
             boolean reachedGoal = checkGoalWeight(getWeightFloat(binding.newWeightField));
