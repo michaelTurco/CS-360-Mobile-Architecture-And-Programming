@@ -1,14 +1,20 @@
 package com.turco_michael_weight_tracking.ui.account;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.turco_michael_weight_tracking.LocalStorage;
+import com.turco_michael_weight_tracking.NavigationUtils;
+import com.turco_michael_weight_tracking.R;
+import com.turco_michael_weight_tracking.UserDatabase;
 import com.turco_michael_weight_tracking.databinding.FragmentAccountBinding;
 
 public class AccountFragment extends Fragment {
@@ -26,16 +32,87 @@ public class AccountFragment extends Fragment {
 
         setupButtonEvents();
         updateDisplayValues();
+        setupTextWatcher();
+        updateSaveButtonEnabled();
 
         return root;
     }
 
     private void setupButtonEvents() {
+        // Goal weight 'save & apply' button
+        binding.editNicknameApply.setOnClickListener(v -> clickNicknameApplyButton());
+
         // clicking the 'sign out' button
     }
 
     private void updateDisplayValues() {
         // update 'account nickname'
+        String nickname = storage.getAccountNickname();
+
+        if (UserDatabase.currentUsername != null) {
+            // set nickname to account username if it isn't set yet
+            if (nickname == null) {
+                nickname = UserDatabase.currentUsername;
+                storage.setAccountNickname(nickname);
+            }
+
+            binding.editNicknameField.setText(nickname);
+        }
+    }
+
+    private void setupTextWatcher() {
+        // check when the nickname text box has been edited
+        TextWatcher afterTextChangedListener = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // unused
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // unused
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                updateSaveButtonEnabled();
+            }
+        };
+
+        // add the listener to the text box
+        binding.editNicknameField.addTextChangedListener(afterTextChangedListener);
+    }
+
+    private void updateSaveButtonEnabled() {
+        binding.editNicknameApply.setEnabled(hasValidNicknameText());
+
+        if (binding.editNicknameApply.isEnabled()) {
+            int enabledColor = ContextCompat.getColor(requireContext(), R.color.blue_medium);
+            binding.editNicknameApply.setBackgroundColor(enabledColor);
+            binding.editNicknameApply.setAlpha(1.0f);
+        } else {
+            int disabledColor = ContextCompat.getColor(requireContext(), R.color.transparent_75);
+            binding.editNicknameApply.setBackgroundColor(disabledColor);
+            binding.editNicknameApply.setAlpha(0.5f);
+        }
+    }
+
+    private boolean hasValidNicknameText() {
+        // account name is between 2 and 16 inclusive
+        int length = binding.editNicknameField.getText().toString().length();
+        return length >= 2 && length <= 16;
+    }
+
+    private void clickNicknameApplyButton() {
+        // cancel if the input is invalid
+        if (!hasValidNicknameText()) return;
+
+        // save nickname in storage
+        String nickname = binding.editNicknameField.getText().toString();
+        storage.setAccountNickname(nickname);
+
+        // send the user to the home page
+        NavigationUtils.navigateTo(this, R.id.navigation_home);
     }
 
     @Override
