@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "305669228686",
+    "project_id": "track-my-weight-5ce0f",
+    "storage_bucket": "track-my-weight-5ce0f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:305669228686:android:ea257b574ff7566641a1df",
+        "android_client_info": {
+          "package_name": "com.turco_michael_weight_tracking"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0scvasJezLMNj8-EvRGxbLAuz4AwEpTA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
