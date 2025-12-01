@@ -45,6 +45,7 @@ public class NewWeightFragment extends Fragment {
         setupButtonEvents();
         setupMenuTexts();
         updateSubmitButtonEnabled();
+        updateDisplayValues();
 
         return root;
     }
@@ -125,6 +126,26 @@ public class NewWeightFragment extends Fragment {
 
     private boolean hasValidWeightText(EditText text) {
         return text.getText().toString().length() > 1;
+    }
+
+    private void updateDisplayValues() {
+        MeasurementUnit unit = storage.getMeasurementUnit();
+
+        // update 'most recent weight'
+        float weight = db.getMostRecentWeight();
+        if (weight == LocalStorage.UNKNOWN) {
+            binding.mostRecentWeight.setText(R.string.no_records);
+        } else {
+            binding.mostRecentWeight.setText(UnitConverter.poundsToFormattedUnitString(requireContext(), weight, unit));
+        }
+
+        // update 'goal weight'
+        float goalWeight = storage.getGoalWeight();
+        if (goalWeight == LocalStorage.UNKNOWN) {
+            binding.goalWeight.setText(R.string.no_goal_weight);
+        } else {
+            binding.goalWeight.setText(UnitConverter.poundsToFormattedUnitString(requireContext(), goalWeight, unit));
+        }
     }
 
     private float getWeightFloat(EditText text) {
