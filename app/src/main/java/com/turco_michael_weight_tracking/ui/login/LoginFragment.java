@@ -194,6 +194,8 @@ public class LoginFragment extends Fragment implements IAuthenticationUI {
     }
 
     public void showMessage(@StringRes int message) {
+        // display a small message on the bottom of the screen,
+        // usually an error that something wasn't able to save
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
     }
 
