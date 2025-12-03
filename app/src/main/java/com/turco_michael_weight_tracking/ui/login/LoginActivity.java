@@ -9,6 +9,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
+import com.turco_michael_weight_tracking.R;
 import com.turco_michael_weight_tracking.databinding.ActivityLoginBinding;
 
 public class LoginActivity extends AppCompatActivity {
@@ -26,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
 
         applyWindowInsets();
+        updateToolbarTitle();
     }
 
     private void applyWindowInsets() {
@@ -50,6 +52,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             enableImmersiveMode();
+        }
+    }
+
+    private void updateToolbarTitle() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(R.string.title_login);
         }
     }
 }
