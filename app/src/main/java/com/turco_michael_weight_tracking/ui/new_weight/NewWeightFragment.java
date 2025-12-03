@@ -1,6 +1,5 @@
 package com.turco_michael_weight_tracking.ui.new_weight;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
