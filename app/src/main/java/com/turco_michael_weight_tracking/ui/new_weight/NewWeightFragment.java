@@ -103,16 +103,11 @@ public class NewWeightFragment extends Fragment {
 
         // if data written to firebase successfully
         if (result) {
-            // check if the new weight meets the goal weight, then send a notification (if allowed)
-            boolean reachedGoal = checkGoalWeight(getWeightFloat(binding.newWeightField));
-
             // reset the text
             binding.newWeightField.setText("");
 
             // send the user to the weight history
-            if (!reachedGoal) {
-                NavigationUtils.navigateTo(this, R.id.navigation_view_list);
-            }
+            NavigationUtils.navigateTo(this, R.id.navigation_view_list);
             return;
         }
 
@@ -152,35 +147,6 @@ public class NewWeightFragment extends Fragment {
         // convert input into pounds based on what measurement unit they are currently using
         float input = Float.parseFloat(text.getText().toString());
         return UnitConverter.unitToPounds(input, measurementUnit);
-    }
-
-    private boolean checkGoalWeight(float currentWeight) {
-        float goalWeight = storage.getGoalWeight();
-
-        // has valid entries for both
-        if (goalWeight != LocalStorage.UNKNOWN && currentWeight != LocalStorage.UNKNOWN) {
-            if (currentWeight <= goalWeight) {
-                // has reached goal weight successfully!
-                if (hasNotificationsEnabled()) {
-                    // send notification that goal weight is reached
-                    displayGoalReachedNotification();
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean hasNotificationsEnabled() {
-        return storage.getNotificationStatus() == LocalStorage.NotificationStatus.ACCEPTED;
-    }
-
-    private void displayGoalReachedNotification() {
-        new AlertDialog.Builder(getContext())
-                .setTitle("Congratulations!")
-                .setMessage("Your goal weight has been reached!")
-                .setPositiveButton("OK", (dialog, which) -> NavigationUtils.navigateTo(this, R.id.navigation_home))
-                .show();
     }
 
     public void showMessage(@StringRes int message) {
