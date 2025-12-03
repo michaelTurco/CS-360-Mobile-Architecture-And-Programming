@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.IdRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.navigation.NavController;
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         setupNavigationBar();
         setupDefaultTransition();
         setupNavigationListener();
+
+        applyWindowInsets();
     }
 
     private void setupNavigationBar() {
@@ -107,5 +111,13 @@ public class MainActivity extends AppCompatActivity {
         if (hasFocus) {
             enableImmersiveMode();
         }
+    }
+
+    private void applyWindowInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.container, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
     }
 }
