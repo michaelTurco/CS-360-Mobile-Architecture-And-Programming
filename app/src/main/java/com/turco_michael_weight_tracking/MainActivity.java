@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         controller.hide(WindowInsetsCompat.Type.navigationBars());
         controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+        controller.setAppearanceLightStatusBars(true);
         // got help from: https://developer.android.com/develop/ui/views/layout/immersive
     }
 
