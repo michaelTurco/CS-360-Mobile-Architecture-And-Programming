@@ -38,7 +38,6 @@ public class HomeFragment extends Fragment {
         setupButtonEvents();
         setWelcomeText();
         updateDisplayValues();
-        attemptNotificationRequest();
 
         return root;
     }
@@ -95,32 +94,6 @@ public class HomeFragment extends Fragment {
 
         // update 'goal reached estimation'
         binding.estimatedTime.setText(graphEstimation.getFormattedEstimatedTime());
-    }
-
-    private void attemptNotificationRequest() {
-        LocalStorage.NotificationStatus status = storage.getNotificationStatus();
-
-        // only make request if user hasn't responded before
-        if (status == LocalStorage.NotificationStatus.UNKNOWN) {
-            displayNotificationRequest();
-        }
-    }
-
-    private void NotificationsAccepted() {
-        storage.setNotificationStatus(LocalStorage.NotificationStatus.ACCEPTED);
-    }
-
-    private void NotificationsRejected() {
-        storage.setNotificationStatus(LocalStorage.NotificationStatus.REJECTED);
-    }
-
-    private void displayNotificationRequest() {
-        new AlertDialog.Builder(getContext())
-                .setTitle(R.string.title_permission)
-                .setMessage(R.string.notifications_permission)
-                .setPositiveButton(R.string.permission_approve, (dialog, which) -> NotificationsAccepted())
-                .setNegativeButton(R.string.permission_deny, (dialog, which) -> NotificationsRejected())
-                .show();
     }
 
     @Override
